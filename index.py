@@ -8,7 +8,7 @@ import requests
 
 session = requests.Session()
 
-rp = session.post('http://192.168.1.71:8000/login', json={
+session.post('http://192.168.1.71:8000/login', json={
     'username': 'test',
     'password': 'test',
     'eauth': 'pam',
@@ -35,16 +35,52 @@ def internal_server_error(a):
     return render_template('500.html'), 500
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    form = ModulesForm()
-    if form.validate_on_submit():
-        flash('开始执行: '+form.name.data)
-        return redirect(url_for('index'))
+    data = session.get('http://192.168.1.71:8000/').json()
+    return render_template('index.html', Data=data)
 
-    jobs = session.get('http://192.168.1.71:8000/jobs/20170112144945138666').json()
 
-    return render_template('index.html', form=form, Data=rp, jobs=jobs)
+@app.route('/minions/')
+def minions():
+    data = session.get('http://192.168.1.71:8000/minions').json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/minions/<mid>')
+def minion(mid):
+    data = session.get('http://192.168.1.71:8000/minions/%s' % mid).json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/jobs/')
+def jobs():
+    data = session.get('http://192.168.1.71:8000/jobs').json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/jobs/<jid>')
+def job(jid):
+    data = session.get('http://192.168.1.71:8000/jobs/%s' % jid).json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/keys/')
+def keys():
+    data = session.get('http://192.168.1.71:8000/keys').json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/keys/<mid>')
+def key(mid):
+    data = session.get('http://192.168.1.71:8000/keys/%s' % mid).json()
+    return render_template('index.html', Data=data)
+
+
+@app.route('/stats/')
+def stats():
+    data = session.get('http://192.168.1.71:8000/stats').json()
+    return render_template('index.html', Data=data)
 
 
 if __name__ == "__main__":
