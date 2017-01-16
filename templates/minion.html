@@ -5,13 +5,21 @@
 
 {% block page_content %}
 
+
 <table>
-{% for i in Data %}
+{% for i in Data['return'][0] %}
 <thead><tr><th>{{ i }}</th></tr></thead>
 <tbody>
-<tr><td > {{ Data[i] }}</td></tr>
+{% for n in Data['return'][0][i] %}
+<tr>
+    <td > {{ n }}</td>
+    <td > {{ Data['return'][0][i][n] }}</td>
+</tr>
+{% endfor %}
+
 </tbody>
 {% endfor %}
 </table>
+
 
 {% endblock %}

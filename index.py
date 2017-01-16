@@ -44,43 +44,42 @@ def index():
 @app.route('/minions/')
 def minions():
     data = session.get('http://192.168.1.71:8000/minions').json()
-    return render_template('index.html', Data=data)
+    return render_template('minions.html', Data=data)
 
 
 @app.route('/minions/<mid>')
 def minion(mid):
     data = session.get('http://192.168.1.71:8000/minions/%s' % mid).json()
-    return render_template('index.html', Data=data)
+    return render_template('minion.html', Data=data)
 
 
 @app.route('/jobs/')
 def jobs():
     data = session.get('http://192.168.1.71:8000/jobs').json()
-    return render_template('index.html', Data=data)
+    return render_template('jobs.html', Data=data)
 
 
 @app.route('/jobs/<jid>')
 def job(jid):
     data = session.get('http://192.168.1.71:8000/jobs/%s' % jid).json()
-    return render_template('index.html', Data=data)
+    return render_template('job.html', Data=data)
 
 
 @app.route('/keys/')
 def keys():
     data = session.get('http://192.168.1.71:8000/keys').json()
-    return render_template('index.html', Data=data)
-
+    return render_template('keys.html', Data=data)
 
 @app.route('/keys/<mid>')
 def key(mid):
     data = session.get('http://192.168.1.71:8000/keys/%s' % mid).json()
-    return render_template('index.html', Data=data)
+    return render_template('key.html', Data=data)
 
 
 @app.route('/stats/')
 def stats():
     data = session.get('http://192.168.1.71:8000/stats').json()
-    return render_template('index.html', Data=data)
+    return render_template('stats.html', Data=data)
 
 
 if __name__ == "__main__":

@@ -6,10 +6,10 @@
 {% block page_content %}
 
 <table>
-{% for i in Data %}
+{% for i in Data['info'][0] %}
 <thead><tr><th>{{ i }}</th></tr></thead>
 <tbody>
-<tr><td > {{ Data[i] }}</td></tr>
+<tr><td > {{ Data['info'][0][i] }}</td></tr>
 </tbody>
 {% endfor %}
 </table>
