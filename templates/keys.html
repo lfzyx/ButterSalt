@@ -7,10 +7,16 @@
 
 <table>
 {% for i in  Data['return'] %}
-<thead><tr><th>{{ i }}</th></tr></thead>
+<thead>
+<tr>
+    <th>{{ i }}</th>
+</tr>
+</thead>
 <tbody>
 {% for n in Data['return'][i] %}
-<tr><td > {{ n }}</td></tr>
+<tr>
+    <td> {{ n }}</td>
+</tr>
 {% endfor %}
 </tbody>
 {% endfor %}

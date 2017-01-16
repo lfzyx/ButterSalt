@@ -70,6 +70,7 @@ def keys():
     data = session.get('http://192.168.1.71:8000/keys').json()
     return render_template('keys.html', Data=data)
 
+
 @app.route('/keys/<mid>')
 def key(mid):
     data = session.get('http://192.168.1.71:8000/keys/%s' % mid).json()
