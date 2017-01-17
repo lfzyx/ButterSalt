@@ -2,6 +2,8 @@
 
 ButterSalt is a GUI Devops tool based on the SaltStack [netapi.rest_cherrypy](https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html)
 
+ButterSalt uses the [flask](http://flask.pocoo.org) web framework
+
 You need to add the following configuration items to the /etc/salt/master configuration file：
 
 <pre>
