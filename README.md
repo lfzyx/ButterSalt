@@ -4,12 +4,14 @@ ButterSalt is a GUI Devops tool based on the SaltStack [netapi.rest_cherrypy](ht
 
 ButterSalt uses the [flask](http://flask.pocoo.org) web framework
 
-You need to add the following configuration items to the /etc/salt/master configuration file：
+You
+
+A full-access access for user lfzyx need to add the following configuration items to the /etc/salt/master configuration file：:
 
 <pre>
 external_auth:
   pam:
-    test:
+    lfzyx:
         - .*
         - '@runner'
         - '@wheel'
@@ -18,3 +20,5 @@ rest_cherrypy:
   port: 8000
   disable_ssl: True
 </pre>
+
+> You need to replace the lfzyx with the user on the salt-master server
