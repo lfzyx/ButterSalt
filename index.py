@@ -6,6 +6,10 @@ from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
 import requests
 
+
+url = 'http://192.168.1.71:8000'
+
+
 session = requests.Session()
 
 app = Flask(__name__)
@@ -41,77 +45,71 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        data = session.post('http://192.168.1.71:8000/login/', json={
+        data = session.post(url + '/login/', json={
             'username': username,
             'password': password,
             'eauth': 'pam',
         }).json()
         return render_template('index.html', Data=data)
-    data = session.get('http://192.168.1.71:8000/login').json()
+    data = session.get(url + '/login').json()
     return render_template('login.html', Data=data, form=form)
 
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
-    data = session.post('http://192.168.1.71:8000/logout').json()
+    data = session.post(url + '/logout').json()
     return render_template('index.html', Data=data)
 
 
 @app.route('/')
 def index():
-    data = session.get('http://192.168.1.71:8000/').json()
+    data = session.get(url + '/').json()
     return render_template('index.html', Data=data)
 
 
 @app.route('/minions/', methods=['GET', 'POST'])
-def minions():
+@app.route('/minions/<mid>')
+def minions(mid=None):
     form = ModulesForm()
+    if mid:
+        data = session.get(url + '/minions/%s' % mid).json()
+        return render_template('minion.html', Data=data)
     if form.validate_on_submit():
         flash('执行完成!')
         target = form.target.data
         modules = form.modules.data
-        jid = session.post('http://192.168.1.71:8000/minions/', json={
+        jid = session.post(url + '/minions/', json={
             'tgt': target,
             'fun': modules,
         }).json()['return'][0]['jid']
         return redirect(url_for('job', jid=jid))
-    data = session.get('http://192.168.1.71:8000/minions').json()
+    data = session.get(url + '/minions').json()
     return render_template('minions.html', Data=data, form=form)
 
 
-@app.route('/minions/<mid>')
-def minion(mid):
-    data = session.get('http://192.168.1.71:8000/minions/%s' % mid).json()
-    return render_template('minion.html', Data=data)
-
-
 @app.route('/jobs/')
-def jobs():
-    data = session.get('http://192.168.1.71:8000/jobs').json()
+@app.route('/jobs/<jid>')
+def job(jid=None):
+    if jid:
+        data = session.get(url + '/jobs/%s' % jid).json()
+        return render_template('job.html', Data=data)
+    data = session.get(url + '/jobs').json()
     return render_template('jobs.html', Data=data)
 
 
-@app.route('/jobs/<jid>')
-def job(jid):
-    data = session.get('http://192.168.1.71:8000/jobs/%s' % jid).json()
-    return render_template('job.html', Data=data)
-
-
 @app.route('/keys/')
-def keys():
-    data = session.get('http://192.168.1.71:8000/keys').json()
-    return render_template('keys.html', Data=data)
-
-
 @app.route('/keys/<mid>')
-def key(mid):
-    data = session.get('http://192.168.1.71:8000/keys/%s' % mid).json()
-    return render_template('key.html', Data=data)
+def key(mid=None):
+    if mid:
+        data = session.get(url + '/keys/%s' % mid).json()
+        return render_template('key.html', Data=data)
+    data = session.get(url + '/keys').json()
+    return render_template('keys.html', Data=data)
 
 
 @app.route('/stats/')
 def stats():
-    data = session.get('http://192.168.1.71:8000/stats').json()
+    data = session.get(url + '/stats').json()
     return render_template('stats.html', Data=data)
 
 
