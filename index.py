@@ -82,14 +82,14 @@ def minions(mid=None):
             'tgt': target,
             'fun': modules,
         }).json()['return'][0]['jid']
-        return redirect(url_for('job', jid=jid))
+        return redirect(url_for('jobs', jid=jid))
     data = session.get(url + '/minions').json()
     return render_template('minions.html', Data=data, form=form)
 
 
 @app.route('/jobs/')
 @app.route('/jobs/<jid>')
-def job(jid=None):
+def jobs(jid=None):
     if jid:
         data = session.get(url + '/jobs/%s' % jid).json()
         return render_template('job.html', Data=data)
@@ -99,7 +99,7 @@ def job(jid=None):
 
 @app.route('/keys/')
 @app.route('/keys/<mid>')
-def key(mid=None):
+def keys(mid=None):
     if mid:
         data = session.get(url + '/keys/%s' % mid).json()
         return render_template('key.html', Data=data)
