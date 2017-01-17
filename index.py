@@ -1,18 +1,12 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
 import requests
 
 session = requests.Session()
-
-session.post('http://192.168.1.71:8000/login', json={
-    'username': 'test',
-    'password': 'test',
-    'eauth': 'pam',
-}).json()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'uiJaX!N>ZlHq5d)XjQ|EJb9/Fr'
@@ -21,9 +15,15 @@ moment = Moment(app)
 
 
 class ModulesForm(FlaskForm):
-    name = StringField('输入要执行的模块', validators=[DataRequired()])
+    target = StringField('目标', validators=[DataRequired()])
+    modules = StringField('执行模块', validators=[DataRequired()])
     submit = SubmitField('提交')
 
+
+class LoginForm(FlaskForm):
+    username = StringField('用户名', validators=[DataRequired()])
+    password = PasswordField('密码', validators=[DataRequired()])
+    submit = SubmitField('提交')
 
 @app.errorhandler(404)
 def page_not_found(a):
@@ -35,16 +35,48 @@ def internal_server_error(a):
     return render_template('500.html'), 500
 
 
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        data = session.post('http://192.168.1.71:8000/login/', json={
+            'username': username,
+            'password': password,
+            'eauth': 'pam',
+        }).json()
+        return render_template('index.html', Data=data)
+    data = session.get('http://192.168.1.71:8000/login').json()
+    return render_template('login.html', Data=data, form=form)
+
+
+@app.route('/logout/', methods=['GET', 'POST'])
+def logout():
+    data = session.post('http://192.168.1.71:8000/logout').json()
+    return render_template('index.html', Data=data)
+
+
 @app.route('/')
 def index():
     data = session.get('http://192.168.1.71:8000/').json()
     return render_template('index.html', Data=data)
 
 
-@app.route('/minions/')
+@app.route('/minions/', methods=['GET', 'POST'])
 def minions():
+    form = ModulesForm()
+    if form.validate_on_submit():
+        flash('执行完成!')
+        target = form.target.data
+        modules = form.modules.data
+        jid = session.post('http://192.168.1.71:8000/minions/', json={
+            'tgt': target,
+            'fun': modules,
+        }).json()['return'][0]['jid']
+        return redirect(url_for('job', jid=jid))
     data = session.get('http://192.168.1.71:8000/minions').json()
-    return render_template('minions.html', Data=data)
+    return render_template('minions.html', Data=data, form=form)
 
 
 @app.route('/minions/<mid>')

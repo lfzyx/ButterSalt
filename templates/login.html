@@ -9,19 +9,10 @@
 <br>
 
 <table>
-{% for i in Data['return'][0] %}
-<thead>
-<tr>
-    <th><a href="{{ i }}">{{ i }}</a></th>
-</tr>
-</thead>
+{% for i in Data %}
+<thead><tr><th>{{ i }}</th></tr></thead>
 <tbody>
-{% for n in Data['return'][0][i] %}
-<tr>
-    <td>{{ n }}</td>
-    <td>{{ Data['return'][0][i][n] }}</td>
-</tr>
-{% endfor %}
+<tr><td > {{ Data[i] }}</td></tr>
 </tbody>
 {% endfor %}
 </table>

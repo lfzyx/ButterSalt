@@ -9,17 +9,11 @@ print(session.post('http://192.168.1.71:8000/login', json={
     'eauth': 'pam',
 }).json())
 
-# 执行测试命令
-print(session.post('http://192.168.1.71:8000', json=[{
-    'client': 'local',
+print(session.post('http://192.168.1.71:8000/minions', json={
     'tgt': 'HX*',
     'fun': 'test.ping',
-}]).json())
+}).json())
 
-# minions 接口
-print(session.get('http://192.168.1.71:8000/minions/HXtest3').json())
-
-print(session.get('http://192.168.1.71:8000/jobs/20170115181824429759').json())
 
 # 登出
 print(session.post('http://192.168.1.71:8000/logout').json())
