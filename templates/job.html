@@ -7,9 +7,15 @@
 
 <table>
 {% for i in Data['info'][0] %}
-<thead><tr><th>{{ i }}</th></tr></thead>
+<thead>
+<tr>
+    <th>{{ i }}</th>
+</tr>
+</thead>
 <tbody>
-<tr><td > {{ Data['info'][0][i] }}</td></tr>
+<tr>
+    <td > {{ Data['info'][0][i] }}</td>
+</tr>
 </tbody>
 {% endfor %}
 </table>
