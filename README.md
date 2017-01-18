@@ -20,3 +20,11 @@ rest_cherrypy:
 </pre>
 
 > You need to replace the lfzyx with the user on the salt-master server
+
+## Install
+
+`git clone https://github.com/lfzyx/ButterSalt.git`
+
+`pip3 install -r requirements.txt`
+
+`python3 index.py`
