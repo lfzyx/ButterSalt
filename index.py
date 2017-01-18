@@ -2,13 +2,15 @@ from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
+from werkzeug.utils import secure_filename
 import requests
+import os
 
 
 url = 'http://192.168.1.71:8000'
-
 
 session = requests.Session()
 
@@ -28,6 +30,12 @@ class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired()])
     password = PasswordField('密码', validators=[DataRequired()])
     submit = SubmitField('提交')
+
+
+class FileForm(FlaskForm):
+    file = FileField('文件名', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    submit = SubmitField('上传')
+
 
 @app.errorhandler(404)
 def page_not_found(a):
@@ -111,6 +119,17 @@ def keys(mid=None):
 def stats():
     data = session.get(url + '/stats').json()
     return render_template('stats.html', Data=data)
+
+
+@app.route('/upload/', methods=['GET', 'POST'])
+def upload():
+    form = FileForm()
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save(os.path.join(
+            app.root_path, 'uploadfile', filename
+        ))
+    return render_template('upload.html', form=form)
 
 
 if __name__ == "__main__":
