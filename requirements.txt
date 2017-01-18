@@ -1,0 +1,13 @@
+Flask==0.12
+Flask-Bootstrap==3.3.7.1
+Flask-Moment==0.5.1
+Flask-WTF==0.14.2
+Jinja2==2.9.4
+MarkupSafe==0.23
+WTForms==2.1
+Werkzeug==0.11.15
+click==6.7
+dominate==2.3.1
+itsdangerous==0.24
+requests==2.12.4
+visitor==0.1.3
