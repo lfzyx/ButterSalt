@@ -1,8 +1,9 @@
-from flask import Flask, render_template, session, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, session
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_login import LoginManager
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
 from werkzeug.utils import secure_filename
@@ -12,12 +13,14 @@ import os
 
 url = 'http://192.168.1.71:8000'
 
-session = requests.Session()
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'uiJaX!N>ZlHq5d)XjQ|EJb9/Fr'
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+Token = requests.Session()
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
 
 
 class ModulesForm(FlaskForm):
@@ -53,26 +56,43 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        data = session.post(url + '/login/', json={
+        data = Token.post(url + '/login/', json={
             'username': username,
             'password': password,
             'eauth': 'pam',
         }).json()
-        return render_template('index.html', Data=data)
-    data = session.get(url + '/login').json()
-    return render_template('login.html', Data=data, form=form)
+        session['cookies'] = Token.cookies.items()
+        if session.get('cookies') == Token.cookies.items():
+            logins = True
+        else:
+            logins = False
+        return render_template('index.html', Data=data, logins=logins)
+    data = Token.get(url + '/login').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('login.html', Data=data, form=form, logins=logins)
 
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
-    data = session.post(url + '/logout').json()
-    return render_template('index.html', Data=data)
+    data = Token.post(url + '/logout').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('index.html', Data=data, logins=logins)
 
 
 @app.route('/')
 def index():
-    data = session.get(url + '/').json()
-    return render_template('index.html', Data=data)
+    data = Token.get(url + '/').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('index.html', Data=data, logins=logins)
 
 
 @app.route('/minions/', methods=['GET', 'POST'])
@@ -80,45 +100,69 @@ def index():
 def minions(mid=None):
     form = ModulesForm()
     if mid:
-        data = session.get(url + '/minions/%s' % mid).json()
+        data = Token.get(url + '/minions/%s' % mid).json()
         return render_template('minion.html', Data=data)
     if form.validate_on_submit():
         flash('执行完成!')
         target = form.target.data
         modules = form.modules.data
-        jid = session.post(url + '/minions/', json={
+        jid = Token.post(url + '/minions/', json={
             'tgt': target,
             'fun': modules,
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
-    data = session.get(url + '/minions').json()
-    return render_template('minions.html', Data=data, form=form)
+    data = Token.get(url + '/minions').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('minions.html', Data=data, form=form, logins=logins)
 
 
 @app.route('/jobs/')
 @app.route('/jobs/<jid>')
 def jobs(jid=None):
     if jid:
-        data = session.get(url + '/jobs/%s' % jid).json()
-        return render_template('job.html', Data=data)
-    data = session.get(url + '/jobs').json()
-    return render_template('jobs.html', Data=data)
+        data = Token.get(url + '/jobs/%s' % jid).json()
+        if session.get('cookies') == Token.cookies.items():
+            logins = True
+        else:
+            logins = False
+        return render_template('job.html', Data=data, logins=logins)
+    data = Token.get(url + '/jobs').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('jobs.html', Data=data, logins=logins)
 
 
 @app.route('/keys/')
 @app.route('/keys/<mid>')
 def keys(mid=None):
     if mid:
-        data = session.get(url + '/keys/%s' % mid).json()
-        return render_template('key.html', Data=data)
-    data = session.get(url + '/keys').json()
-    return render_template('keys.html', Data=data)
+        data = Token.get(url + '/keys/%s' % mid).json()
+        if session.get('cookies') == Token.cookies.items():
+            logins = True
+        else:
+            logins = False
+        return render_template('key.html', Data=data, logins=logins)
+    data = Token.get(url + '/keys').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('keys.html', Data=data, logins=logins)
 
 
 @app.route('/stats/')
 def stats():
-    data = session.get(url + '/stats').json()
-    return render_template('stats.html', Data=data)
+    data = Token.get(url + '/stats').json()
+    if session.get('cookies') == Token.cookies.items():
+        logins = True
+    else:
+        logins = False
+    return render_template('stats.html', Data=data, logins=logins)
 
 
 @app.route('/upload/', methods=['GET', 'POST'])
