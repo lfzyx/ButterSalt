@@ -14,7 +14,7 @@ import os
 url = 'http://192.168.1.71:8000'
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'uiJaX!N>ZlHq5d)XjQ|EJb9/Fr'
+app.config['SECRET_KEY'] = os.urandom(24)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 Token = requests.Session()
