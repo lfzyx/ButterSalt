@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}welcome to ButterSalt{% endblock %}
+
+{% block page_content %}
+
+<table class="table table-striped">
+{% for i in Data %}
+<thead>
+<tr>
+    <th>{{ i }}</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td > {{ Data[i] }}</td>
+</tr>
+</tbody>
+{% endfor %}
+</table>
+
+{% endblock %}

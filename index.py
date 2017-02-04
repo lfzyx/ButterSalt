@@ -1,59 +1,28 @@
+import os
+
+import requests
 from flask import Flask, render_template, redirect, url_for, flash, session, g
 from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from flask_login import LoginManager
+from werkzeug.utils import secure_filename
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
-from werkzeug.utils import secure_filename
-import requests
-import os
-import sqlite3
 
+import schema
 
 url = 'http://192.168.1.71:8000'
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(24)
-app.config['DATABASE'] = os.path.join(app.root_path, 'schema.db')
+app.config.from_pyfile('config.cfg', silent=True)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 Token = requests.Session()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
-
-
-def connect_db():
-    """Connects to the specific database."""
-    rv = sqlite3.connect(app.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
-    return rv
-
-
-def get_db():
-    """Opens a new database connection if there is none yet for the
-    current application context.
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = connect_db()
-    return g.sqlite_db
-
-
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-
-
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 
 class ModulesForm(FlaskForm):
@@ -74,12 +43,12 @@ class FileForm(FlaskForm):
 
 
 @app.errorhandler(404)
-def page_not_found(a):
+def page_not_found(error):
     return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
-def internal_server_error(a):
+def internal_server_error(error):
     return render_template('500.html'), 500
 
 
@@ -139,6 +108,7 @@ def minions(mid=None):
         flash('执行完成!')
         target = form.target.data
         modules = form.modules.data
+        schema.add_modules_history(target, modules)
         jid = Token.post(url + '/minions/', json={
             'tgt': target,
             'fun': modules,
@@ -209,6 +179,13 @@ def upload():
     return render_template('upload.html', form=form)
 
 
+@app.route('/user')
+def show_user():
+    cur = g.sqlite_db.execute('select title, text from entries order by id desc')
+    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    return render_template('show_user.html', entries=entries)
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
