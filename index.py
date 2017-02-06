@@ -65,36 +65,30 @@ def login():
         }).json()
         session['cookies'] = Token.cookies.items()
         if session.get('cookies') == Token.cookies.items():
-            logins = True
+            session['logins'] = True
+            flash('You were logged in')
         else:
-            logins = False
-        return render_template('index.html', Data=data, logins=logins)
+            session['logins'] = False
+        return render_template('index.html', Data=data)
     data = Token.get(url + '/login').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('login.html', Data=data, form=form, logins=logins)
+    return render_template('login.html', Data=data, form=form)
 
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
     data = Token.post(url + '/logout').json()
     if session.get('cookies') == Token.cookies.items():
-        logins = True
+        session['logins'] = True
     else:
-        logins = False
-    return render_template('index.html', Data=data, logins=logins)
+        session['logins'] = False
+        flash('You were logged out')
+    return render_template('index.html', Data=data)
 
 
 @app.route('/')
 def index():
     data = Token.get(url + '/').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('index.html', Data=data, logins=logins)
+    return render_template('index.html', Data=data)
 
 
 @app.route('/minions/', methods=['GET', 'POST'])
@@ -115,11 +109,7 @@ def minions(mid=None):
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(url + '/minions').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('minions.html', Data=data, form=form, logins=logins)
+    return render_template('minions.html', Data=data, form=form)
 
 
 @app.route('/jobs/')
@@ -127,17 +117,9 @@ def minions(mid=None):
 def jobs(jid=None):
     if jid:
         data = Token.get(url + '/jobs/%s' % jid).json()
-        if session.get('cookies') == Token.cookies.items():
-            logins = True
-        else:
-            logins = False
-        return render_template('job.html', Data=data, logins=logins)
+        return render_template('job.html', Data=data)
     data = Token.get(url + '/jobs').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('jobs.html', Data=data, logins=logins)
+    return render_template('jobs.html', Data=data)
 
 
 @app.route('/keys/')
@@ -145,27 +127,15 @@ def jobs(jid=None):
 def keys(mid=None):
     if mid:
         data = Token.get(url + '/keys/%s' % mid).json()
-        if session.get('cookies') == Token.cookies.items():
-            logins = True
-        else:
-            logins = False
-        return render_template('key.html', Data=data, logins=logins)
+        return render_template('key.html', Data=data)
     data = Token.get(url + '/keys').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('keys.html', Data=data, logins=logins)
+    return render_template('keys.html', Data=data)
 
 
 @app.route('/stats/')
 def stats():
     data = Token.get(url + '/stats').json()
-    if session.get('cookies') == Token.cookies.items():
-        logins = True
-    else:
-        logins = False
-    return render_template('stats.html', Data=data, logins=logins)
+    return render_template('stats.html', Data=data)
 
 
 @app.route('/upload/', methods=['GET', 'POST'])
