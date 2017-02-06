@@ -1,12 +1,12 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}ButterSalt{% endblock %}
+{% block title %}ButterSalt{% endblock title %}
 
-{% block head %}
+{% block styles %}
 {{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-{% endblock %}
+{% endblock styles%}
 
 {% block navbar %}
 <nav class="navbar navbar-default">
@@ -45,7 +45,7 @@
         </div>
     </div>
 </nav>
-{% endblock %}
+{% endblock navbar%}
 
 {% block content %}
 <div class="container">
@@ -56,11 +56,12 @@
     </div>
     {% endfor %}
 
-    {% block page_content %}{% endblock %}
+    {% block page_content %}
+    {% endblock page_content %}
 </div>
-{% endblock %}
+{% endblock content %}
 
 {% block scripts %}
 {{ super() }}
 {{ moment.include_moment() }}
-{% endblock %}
+{% endblock scripts%}
