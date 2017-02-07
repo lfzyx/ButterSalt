@@ -69,7 +69,7 @@ def login():
             flash('You were logged in')
         else:
             session['logins'] = False
-        return render_template('index.html', Data=data)
+        return render_template('login.html', Data=data, form=form)
     data = Token.get(url + '/login').json()
     return render_template('login.html', Data=data, form=form)
 
@@ -97,7 +97,7 @@ def minions(mid=None):
     form = ModulesForm()
     if mid:
         data = Token.get(url + '/minions/%s' % mid).json()
-        return render_template('minion.html', Data=data)
+        return render_template('minion.html', Data=data['return'][0])
     if form.validate_on_submit():
         flash('执行完成!')
         target = form.target.data
@@ -109,7 +109,7 @@ def minions(mid=None):
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(url + '/minions').json()
-    return render_template('minions.html', Data=data, form=form)
+    return render_template('minions.html', Data=data['return'][0], form=form)
 
 
 @app.route('/jobs/')
@@ -117,9 +117,9 @@ def minions(mid=None):
 def jobs(jid=None):
     if jid:
         data = Token.get(url + '/jobs/%s' % jid).json()
-        return render_template('job.html', Data=data)
+        return render_template('job.html', Data=data['info'][0])
     data = Token.get(url + '/jobs').json()
-    return render_template('jobs.html', Data=data)
+    return render_template('jobs.html', Data=data['return'][0])
 
 
 @app.route('/keys/')
@@ -127,9 +127,9 @@ def jobs(jid=None):
 def keys(mid=None):
     if mid:
         data = Token.get(url + '/keys/%s' % mid).json()
-        return render_template('key.html', Data=data)
+        return render_template('key.html', Data=data['return']['minions'])
     data = Token.get(url + '/keys').json()
-    return render_template('keys.html', Data=data)
+    return render_template('keys.html', Data=data['return'])
 
 
 @app.route('/stats/')

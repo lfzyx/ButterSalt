@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block page_content %}
+{% block form %}
+{% endblock form %}
 <table class="table table-striped">
-{% for i in  Data  %}
+{% for i in Data %}
 <thead>
 <tr>
     <th>{{ i }}</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-    <td > {{ Data[i] }}</td>
-</tr>
-</tbody>
+{% block table_body scoped %}
+{% endblock table_body %}
 {% endfor %}
 </table>
 {% endblock page_content%}
