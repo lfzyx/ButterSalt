@@ -6,11 +6,11 @@
 {% for i in Data %}
 <thead>
 <tr>
-    <th>{{ i }}</th>
+    <th>{% block href scoped %} {{ i }} {% endblock href %}</th>
 </tr>
 </thead>
 {% block table_body scoped %}
 {% endblock table_body %}
 {% endfor %}
 </table>
-{% endblock page_content%}
+{% endblock page_content %}
