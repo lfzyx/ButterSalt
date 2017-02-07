@@ -1,10 +1,11 @@
 {% extends "table-base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block form %}
+{% block page_content %}
 {{ wtf.quick_form(form) }}
 <br>
-{% endblock form %}
+{{super()}}
+{% endblock page_content%}
 
 {% block table_body %}
 <tbody>
