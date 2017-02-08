@@ -1,19 +1,35 @@
 import requests
 
+url = 'http://192.168.1.71:8000'
+
 session = requests.Session()
 
-# 登陆拿到 Token
-print(session.post('http://192.168.1.71:8000/login', json={
+# /
+print(session.get(url + '/').json())
+
+# /LOGIN
+print(session.get(url + '/login').json())
+
+print(session.post(url + '/login', json={
     'username': 'test',
     'password': 'test',
     'eauth': 'pam',
 }).json())
 
+# /MINIONS
+print(session.get(url + '/minions/').json())
+
 print(session.post('http://192.168.1.71:8000/minions', json={
-    'tgt': 'HX*',
+    'tgt': '*',
     'fun': 'test.ping',
 }).json())
 
+# /JOBS
+print(session.get(url + '/jobs/').json())
 
-# 登出
+# /KEYS
+print(session.get(url + '/keys/').json())
+
+
+# /LOGOUT
 print(session.post('http://192.168.1.71:8000/logout').json())
