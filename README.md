@@ -27,4 +27,6 @@ rest_cherrypy:
 
 `pip3 install -r requirements.txt`
 
+edit the config.cfg and modify the SALT_API option to you salt api address
+
 `python3 index.py`
