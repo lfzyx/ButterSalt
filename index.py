@@ -106,7 +106,7 @@ def minions(mid=None):
             'fun': modules,
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
-    data = Token.get(url + '/minions').json()
+    data = Token.get(app.config.get('SALT_API') + '/minions').json()
     return render_template('minions.html', Data=data['return'][0], form=form)
 
 
@@ -116,7 +116,7 @@ def jobs(jid=None):
     if jid:
         data = Token.get(app.config.get('SALT_API') + '/jobs/%s' % jid).json()
         return render_template('job.html', Data=data['info'][0])
-    data = Token.get(app.config.get('SALTAPI') + '/jobs').json()
+    data = Token.get(app.config.get('SALT_API') + '/jobs').json()
     return render_template('jobs.html', Data=data['return'][0])
 
 
