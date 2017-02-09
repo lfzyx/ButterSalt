@@ -29,7 +29,7 @@ def close_db(error):
 def init_db():
     with app.app_context():
         db = get_db()
-        with app.open_resource(app.config['DATABASE'], mode='r') as f:
+        with app.open_resource(app.config['SQL'], mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
 
@@ -42,8 +42,8 @@ def show_entries(table):
         return entries
 
 
-def add_modules_history(target, modules):
+def add_modules_history(tgt, fun, args, kwargs, user_id):
     with app.app_context():
         db = get_db()
-        db.execute('insert into modules_history (target, modules) values (?, ?)', [target, modules])
+        db.execute('insert into moudle_execute_history (tgt, fun, args, kwargs, user_id) values (?, ?, ?, ?, ?)', [tgt, fun, args, kwargs, user_id])
         db.commit()

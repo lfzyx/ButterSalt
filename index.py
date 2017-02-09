@@ -1,9 +1,9 @@
 import os
 
 import requests
-from flask import Flask, render_template, redirect, url_for, flash, session, g
+from flask import Flask, render_template, redirect, url_for, flash, session, g, request
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -18,20 +18,44 @@ app.config.from_pyfile('config.cfg', silent=True)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 Token = requests.Session()
+Token2 = requests.Session()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
+Token.post(app.config.get('SALT_API') + '/login', json={
+    'username': app.config.get('USERNAME'),
+    'password': app.config.get('PASSWORD'),
+    'eauth': 'pam',
+})
 
-class ModulesForm(FlaskForm):
-    target = StringField('目标', validators=[DataRequired()])
-    modules = StringField('执行模块', validators=[DataRequired()])
-    submit = SubmitField('提交')
+Token2.post(app.config.get('SALT_API') + '/login', json={
+    'username': app.config.get('USERNAME'),
+    'password': app.config.get('PASSWORD'),
+    'eauth': 'pam',
+})
+
+
+# 登陆相关函数和类
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+
+class User(UserMixin):
+    def __init__(self, user_id):
+        self.id = user_id
 
 
 class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired()])
     password = PasswordField('密码', validators=[DataRequired()])
+    submit = SubmitField('提交')
+
+
+class ModulesForm(FlaskForm):
+    target = StringField('目标', validators=[DataRequired()])
+    modules = StringField('执行模块', validators=[DataRequired()])
     submit = SubmitField('提交')
 
 
@@ -56,34 +80,25 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        data = Token.post(app.config.get('SALT_API') + '/login/', json={
-            'username': username,
-            'password': password,
-            'eauth': 'pam',
-        }).json()
-        session['cookies'] = Token.cookies.items()
-        if session.get('cookies') == Token.cookies.items():
+        if username == password:
+            user = User(username)
+            login_user(user)
             session['logins'] = True
-            flash('You were logged in')
-        else:
-            session['logins'] = False
-        return render_template('login.html', Data=data, form=form)
-    data = Token.get(app.config.get('SALT_API') + '/login').json()
-    return render_template('login.html', Data=data, form=form)
+            flash('Logged in successfully.')
+        return redirect(request.args.get('next') or url_for('index'))
+    return render_template('login.html', form=form)
 
 
-@app.route('/logout/', methods=['GET', 'POST'])
+@app.route('/logout/')
+@login_required
 def logout():
-    data = Token.post(app.config.get('SALT_API') + '/logout').json()
-    if session.get('cookies') == Token.cookies.items():
-        session['logins'] = True
-    else:
-        session['logins'] = False
-        flash('You were logged out')
-    return render_template('index.html', Data=data)
+    logout_user()
+    session['logins'] = False
+    return redirect(url_for('index'))
 
 
 @app.route('/')
+@login_required
 def index():
     data = Token.get(app.config.get('SALT_API') + '/').json()
     return render_template('index.html', Data=data)
@@ -91,6 +106,7 @@ def index():
 
 @app.route('/minions/', methods=['GET', 'POST'])
 @app.route('/minions/<mid>')
+@login_required
 def minions(mid=None):
     form = ModulesForm()
     if mid:
@@ -98,12 +114,16 @@ def minions(mid=None):
         return render_template('minion.html', Data=data['return'][0])
     if form.validate_on_submit():
         flash('执行完成!')
-        target = form.target.data
-        modules = form.modules.data
-        schema.add_modules_history(target, modules)
+        tgt = form.target.data
+        fun = form.modules.data
+        args = ["/proc", "/opt"]
+        kwargs = None
+        user_id = 1
+        schema.add_modules_history(tgt, fun, args, kwargs, user_id)
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
-            'tgt': target,
-            'fun': modules,
+            'tgt': tgt,
+            'fun': fun,
+            'arg': args,
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/minions').json()
@@ -112,6 +132,7 @@ def minions(mid=None):
 
 @app.route('/jobs/')
 @app.route('/jobs/<jid>')
+@login_required
 def jobs(jid=None):
     if jid:
         data = Token.get(app.config.get('SALT_API') + '/jobs/%s' % jid).json()
@@ -122,6 +143,7 @@ def jobs(jid=None):
 
 @app.route('/keys/')
 @app.route('/keys/<mid>')
+@login_required
 def keys(mid=None):
     if mid:
         data = Token.get(app.config.get('SALT_API') + '/keys/%s' % mid).json()
@@ -131,12 +153,14 @@ def keys(mid=None):
 
 
 @app.route('/stats/')
+@login_required
 def stats():
     data = Token.get(app.config.get('SALT_API') + '/stats').json()
     return render_template('stats.html', Data=data)
 
 
 @app.route('/upload/', methods=['GET', 'POST'])
+@login_required
 def upload():
     form = FileForm()
     if form.validate_on_submit():
