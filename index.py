@@ -7,9 +7,10 @@ from flask_login import LoginManager, login_user, logout_user, UserMixin, login_
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.utils import secure_filename
 from wtforms import StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Optional
 
 import schema
 
@@ -17,6 +18,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.cfg', silent=True)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+CSRFProtect(app)
 Token = requests.Session()
 Token2 = requests.Session()
 login_manager = LoginManager()
@@ -54,8 +56,11 @@ class LoginForm(FlaskForm):
 
 
 class ModulesForm(FlaskForm):
-    target = StringField('目标', validators=[DataRequired()])
-    modules = StringField('执行模块', validators=[DataRequired()])
+    tgt = StringField('目标', validators=[DataRequired()])
+    fun = StringField('执行模块', validators=[DataRequired()])
+    arg = StringField('参数', validators=[Optional()])
+    keyarg = StringField('键', validators=[Optional()])
+    wordarg = StringField('值', validators=[Optional()])
     submit = SubmitField('提交')
 
 
@@ -97,37 +102,41 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    data = Token.get(app.config.get('SALT_API') + '/').json()
-    return render_template('index.html', Data=data)
-
-
-@app.route('/minions/', methods=['GET', 'POST'])
-@app.route('/minions/<mid>')
-@login_required
-def minions(mid=None):
     form = ModulesForm()
-    if mid:
-        data = Token.get(app.config.get('SALT_API') + '/minions/%s' % mid).json()
-        return render_template('minion.html', Data=data['return'][0])
     if form.validate_on_submit():
         flash('执行完成!')
-        tgt = form.target.data
-        fun = form.modules.data
-        args = ["/proc", "/opt"]
-        kwargs = None
+        tgt = form.tgt.data
+        fun = form.fun.data
         user_id = 1
-        schema.add_modules_history(tgt, fun, args, kwargs, user_id)
+        arg = form.arg.data.split()
+        kwarg = form.kwarg.data
+        print(kwarg)
+        print(dict((l.split('=') for l in kwarg.split(','))))
+        schema.add_modules_history(tgt, fun, user_id, str(arg))
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
             'tgt': tgt,
             'fun': fun,
-            'arg': args,
+            'arg': arg,
+            'kwarg': dict((l.split('=') for l in kwarg.split(','))),
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
+    data = Token.get(app.config.get('SALT_API') + '/').json()
+    return render_template('index.html', Data=data, form=form)
+
+
+@app.route('/minions/')
+@app.route('/minions/<mid>')
+@login_required
+def minions(mid=None):
+    if mid:
+        data = Token.get(app.config.get('SALT_API') + '/minions/%s' % mid).json()
+        return render_template('minion.html', Data=data['return'][0])
+
     data = Token.get(app.config.get('SALT_API') + '/minions').json()
-    return render_template('minions.html', Data=data['return'][0], form=form)
+    return render_template('minions.html', Data=data['return'][0])
 
 
 @app.route('/jobs/')
