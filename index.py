@@ -58,7 +58,7 @@ class LoginForm(FlaskForm):
 class ModulesForm(FlaskForm):
     tgt = StringField('目标', validators=[DataRequired()])
     fun = StringField('执行模块', validators=[DataRequired()])
-    arg = StringField('参数', validators=[Optional()])
+    arg = StringField('顺序参数', validators=[Optional()])
     keyarg = StringField('键', validators=[Optional()])
     wordarg = StringField('值', validators=[Optional()])
     submit = SubmitField('提交')
@@ -112,15 +112,19 @@ def index():
         fun = form.fun.data
         user_id = 1
         arg = form.arg.data.split()
-        kwarg = form.kwarg.data
-        print(kwarg)
-        print(dict((l.split('=') for l in kwarg.split(','))))
+        keyarg = form.keyarg.data
+        wordarg = form.wordarg.data
+        if wordarg == 'True':
+            wordarg = True
+        elif wordarg == 'False':
+            wordarg = False
+        kwarg = {keyarg: wordarg}
         schema.add_modules_history(tgt, fun, user_id, str(arg))
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
             'tgt': tgt,
             'fun': fun,
             'arg': arg,
-            'kwarg': dict((l.split('=') for l in kwarg.split(','))),
+            'kwarg': kwarg,
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
