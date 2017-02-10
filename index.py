@@ -110,7 +110,6 @@ def index():
         flash('执行完成!')
         tgt = form.tgt.data
         fun = form.fun.data
-        user_id = 1
         arg = form.arg.data.split()
         keyarg = form.keyarg.data
         wordarg = form.wordarg.data
@@ -118,8 +117,12 @@ def index():
             wordarg = True
         elif wordarg == 'False':
             wordarg = False
-        kwarg = {keyarg: wordarg}
-        schema.add_modules_history(tgt, fun, user_id, str(arg))
+        if keyarg:
+            kwarg = {keyarg: wordarg}
+        else:
+            kwarg = {}
+        print(kwarg)
+        schema.add_modules_history(tgt, fun, str(arg), str(kwarg))
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
             'tgt': tgt,
             'fun': fun,

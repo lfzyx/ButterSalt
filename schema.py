@@ -42,11 +42,11 @@ def show_entries(table):
         return entries
 
 
-def add_modules_history(tgt, fun, user_id, args):
+def add_modules_history(tgt, fun, args, kwargs, user_id='None'):
     with app.app_context():
         db = get_db()
         db.execute('insert into moudle_execute_history '
-                   '(tgt, fun, user_id, args) '
-                   'values (?, ?, ?, ?)',
-                   [tgt, fun, user_id, args])
+                   '(tgt, fun, args, kwargs, user_id) '
+                   'values (?, ?, ?, ?, ?)',
+                   [tgt, fun, args, kwargs, user_id])
         db.commit()
