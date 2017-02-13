@@ -3,10 +3,10 @@
 {% block page_content %}
 
 <table class="table table-striped">
-{% for i in Data %}
+{% for i in Data|dictsort %}
 <thead>
 <tr>
-    <th>{% block href scoped %} {{ i }} {% endblock href %}</th>
+    <th>{% block href scoped %} {{ i[0] }} {% endblock href %}</th>
 </tr>
 </thead>
 {% block table_body scoped %}

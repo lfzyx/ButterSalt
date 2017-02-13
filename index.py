@@ -121,7 +121,6 @@ def index():
             kwarg = {keyarg: wordarg}
         else:
             kwarg = {}
-        print(kwarg)
         schema.add_modules_history(tgt, fun, str(arg), str(kwarg))
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
             'tgt': tgt,

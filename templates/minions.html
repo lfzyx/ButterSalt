@@ -2,15 +2,15 @@
 
 {% block table_body %}
 <tbody>
-{% for n in Data[i] %}
+{% for n in Data[i[0]] %}
 <tr>
     <td> {{ n }} </td>
-    <td> {{ Data[i][n] }} </td>
+    <td> {{ Data[i[0]][n] }} </td>
 </tr>
 {% endfor %}
 </tbody>
 {% endblock table_body %}
 
 {% block href %}
-<a href="{{ i }}">{{ i }}</a>
+<a href="{{ i[0] }}">{{ i[0] }}</a>
 {% endblock href %}

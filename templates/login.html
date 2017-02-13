@@ -1,4 +1,4 @@
-{% extends "table-base.html" %}
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
@@ -6,11 +6,3 @@
 <br>
 {{super()}}
 {% endblock page_content%}
-
-{% block table_body %}
-<tbody>
-<tr>
-    <td> {{ Data[i] }} </td>
-</tr>
-</tbody>
-{% endblock table_body %}

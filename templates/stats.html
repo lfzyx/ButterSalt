@@ -2,10 +2,10 @@
 
 {% block table_body %}
 <tbody>
-{% for n in Data[i] %}
+{% for n in Data[i[0]] %}
 <tr>
     <td> {{ n }} </td>
-    <td> {{ Data[i][n] }} </td>
+    <td> {{ Data[i[0]][n] }} </td>
 </tr>
 {% endfor %}
 </tbody>
