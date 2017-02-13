@@ -130,7 +130,8 @@ def index():
         }).json()['return'][0]['jid']
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
-    return render_template('index.html', Data=data, form=form)
+    minions = Token.get(app.config.get('SALT_API') + '/keys').json()
+    return render_template('index.html', Data=data, Minions=minions['return']['minions'], form=form)
 
 
 @app.route('/minions/')

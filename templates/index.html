@@ -5,7 +5,14 @@
 <form action="" method="post"  class="form" role="form">
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
-    {{ wtf.form_field(form.tgt) }}
+    <div class="form-group " style="display: inline-block; vertical-align:middle">
+        <label class="control-label" for="tgt">目标</label>
+        <select class="form-control" id="tgt" name="tgt">
+            {% for n in Minions %}
+            <option>{{n}}</option>
+            {% endfor %}
+        </select>
+    </div>
     {{ wtf.form_field(form.fun) }}
     <div class="form-group " style="display: inline-block; vertical-align:middle">
         <label class="control-label" for="arg">顺序参数</label>
