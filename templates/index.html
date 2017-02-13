@@ -7,19 +7,22 @@
     {{ wtf.form_errors(form, hiddens="only") }}
     {{ wtf.form_field(form.tgt) }}
     {{ wtf.form_field(form.fun) }}
-    {{ wtf.form_field(form.arg) }}
+    <div class="form-group " style="display: inline-block; vertical-align:middle">
+        <label class="control-label" for="arg">顺序参数</label>
+        <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="(option)">
+    </div>
 
     <div class="form-group " style="margin-bottom: -20px">
         <label class="control-label" >键值参数</label>
     </div>
     <div class="form-group " style="display: inline-block; vertical-align:middle">
         <label class="control-label" for="keyarg"></label>
-        <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="键">
+        <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="键(option)">
     </div>
-
+    =
     <div class="form-group " style="display: inline-block; vertical-align:middle">
         <label class="control-label" for="wordarg"></label>
-        <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="值">
+        <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="值(option)">
     </div>
     <div style="display: block">
         <input class="btn btn-default" id="submit" name="submit" type="submit" value="提交" >
