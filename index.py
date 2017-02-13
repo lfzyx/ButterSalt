@@ -1,4 +1,5 @@
 import os
+import json
 
 import requests
 from flask import Flask, render_template, redirect, url_for, flash, session, g, request
@@ -131,7 +132,7 @@ def index():
         return redirect(url_for('jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
     minions = Token.get(app.config.get('SALT_API') + '/keys').json()
-    return render_template('index.html', Data=data, Minions=minions['return']['minions'], form=form)
+    return render_template('index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
 
 
 @app.route('/minions/')

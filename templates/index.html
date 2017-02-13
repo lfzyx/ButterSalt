@@ -7,11 +7,8 @@
     {{ wtf.form_errors(form, hiddens="only") }}
     <div class="form-group " style="display: inline-block; vertical-align:middle">
         <label class="control-label" for="tgt">目标</label>
-        <select class="form-control" id="tgt" name="tgt">
-            {% for n in Minions %}
-            <option>{{n}}</option>
-            {% endfor %}
-        </select>
+        <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="输入目标"
+               autocomplete="off" data-provide="typeahead" data-source='{{Minions}}' >
     </div>
     {{ wtf.form_field(form.fun) }}
     <div class="form-group " style="display: inline-block; vertical-align:middle">
