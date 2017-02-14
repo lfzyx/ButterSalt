@@ -59,7 +59,7 @@ class LoginForm(FlaskForm):
 class ModulesForm(FlaskForm):
     tgt = StringField('目标', validators=[DataRequired()])
     fun = StringField('执行模块', validators=[DataRequired()])
-    arg = StringField('顺序参数', validators=[Optional()])
+    arg = StringField('参数', validators=[Optional()])
     keyarg = StringField('键', validators=[Optional()])
     wordarg = StringField('值', validators=[Optional()])
     submit = SubmitField('提交')
