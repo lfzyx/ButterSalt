@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>主机名</th>
+        <th>ip</th>
+        <th>状态</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td> XHtest1 </td>
+        <td> 192.1.7.89 </td>
+        <td class="success"> 在线 </td>
+    </tr>
+    <tr>
+        <td> XHtest2 </td>
+        <td> 192.1.7.10 </td>
+        <td class="danger"> 离线 </td>
+    </tr>
+    </tbody>
+</table>
+
+{% endblock page_content %}

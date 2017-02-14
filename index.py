@@ -135,6 +135,13 @@ def index():
     return render_template('index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
 
 
+@app.route('/cmdb/')
+@login_required
+def cmdb():
+
+    return render_template('cmdb.html')
+
+
 @app.route('/minions/')
 @app.route('/minions/<mid>')
 @login_required

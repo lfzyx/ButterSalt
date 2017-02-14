@@ -7,59 +7,59 @@
     {% if form.tgt.errors %}
     <div class="form-group has-error required">
         {{ form.tgt.label(class="control-label") }}
-        <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="目标"
+        <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="Required"
                autocomplete="off" data-provide="typeahead" data-source='{{Minions}}' >
         <p class="help-block">{% for error in form.tgt.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group required">
         {{ form.tgt.label(class="control-label") }}
-        <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="目标"
+        <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="Required"
                autocomplete="off" data-provide="typeahead" data-source='{{Minions}}' >
     </div>
     {% endif %}
 
     {% if form.fun.errors %}
     <div class="form-group has-error required">
-        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="模块">
+        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="Required">
         <p class="help-block">{% for error in form.fun.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group required">
-        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="模块">
+        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="Required">
     </div>
     {% endif %}
 
     {% if form.arg.errors %}
     <div class="form-group has-error">
-        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="(option)">
+        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="Optional">
         <p class="help-block">{% for error in form.arg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group">
-        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="(option)">
+        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="Optional">
     </div>
     {% endif %}
 
     {% if form.keyarg.errors %}
     <div class="form-group has-error" style="display: inline-block; vertical-align:middle">
-        {{ form.keyarg.label(class="control-label") }}   <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="(option)">
+        {{ form.keyarg.label(class="control-label") }}   <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="Optional">
         <p class="help-block">{% for error in form.keyarg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group" style="display: inline-block; vertical-align:middle">
-        {{ form.keyarg.label(class="control-label") }}  <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="(option)">
+        {{ form.keyarg.label(class="control-label") }}  <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="Optional">
     </div>
     {% endif %}
     =
     {% if form.wordarg.errors %}
     <div class="form-group has-error" style="display: inline-block; vertical-align:middle">
-        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="(option)">
+        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="Optional">
         <p class="help-block">{% for error in form.wordarg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group" style="display: inline-block; vertical-align:middle">
-        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="(option)">
+        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="Optional">
     </div>
     {% endif %}
 
