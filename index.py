@@ -11,7 +11,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.utils import secure_filename
 from wtforms import StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, Optional
+from wtforms.validators import InputRequired, Optional
 
 import schema
 
@@ -51,14 +51,14 @@ class User(UserMixin):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('用户名', validators=[DataRequired()])
-    password = PasswordField('密码', validators=[DataRequired()])
+    username = StringField('用户名', validators=[InputRequired('用户名是必须的')])
+    password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
     submit = SubmitField('提交')
 
 
 class ModulesForm(FlaskForm):
-    tgt = StringField('目标', validators=[DataRequired()])
-    fun = StringField('执行模块', validators=[DataRequired()])
+    tgt = StringField('目标', validators=[InputRequired('目标是必须的')])
+    fun = StringField('模块', validators=[InputRequired('模块是必须的')])
     arg = StringField('参数', validators=[Optional()])
     keyarg = StringField('键', validators=[Optional()])
     wordarg = StringField('值', validators=[Optional()])
