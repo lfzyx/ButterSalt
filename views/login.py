@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, flash, redirect, request, url_for
+from flask import Blueprint, render_template, session, flash, redirect, request, url_for, g
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired
@@ -40,6 +40,7 @@ def index():
             user = User(username)
             login_user(user)
             session['logins'] = True
+            session['username'] = username
             flash('Logged in successfully.')
         return redirect(request.args.get('next') or url_for('index'))
     return render_template('login.html', form=form)
@@ -51,5 +52,6 @@ def index():
     logout_user()
     session['logins'] = False
     return redirect(url_for('index'))
+
 
 

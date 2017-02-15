@@ -23,7 +23,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('cmdb.index') }}">配置管理</a></li>
-                <li><a href="#">持续集成</a></li>
+                <li><a href="#">持续部署</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SaltStack <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -37,7 +37,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if session.logins %}
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">控制面板 <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.username }} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">我的主页</a></li>
                         <li><a href="#">账号设置</a></li>
