@@ -1,19 +1,17 @@
-import os
 import json
+import os
 
 import requests
-from flask import Flask, render_template, redirect, url_for, flash, session, g, request
+from flask import Flask, render_template, redirect, url_for, flash, g
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
+from flask_login import login_required
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
-
-import schema
 
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg', silent=True)
@@ -22,9 +20,15 @@ moment = Moment(app)
 CSRFProtect(app)
 Token = requests.Session()
 Token2 = requests.Session()
-login_manager = LoginManager()
-login_manager.login_view = "login"
-login_manager.init_app(app)
+
+from views.cmdb import cmdb
+from views.saltstack import saltstack
+from views.login import login
+from views.login import logout
+app.register_blueprint(cmdb)
+app.register_blueprint(saltstack)
+app.register_blueprint(login)
+app.register_blueprint(logout)
 
 Token.post(app.config.get('SALT_API') + '/login', json={
     'username': app.config.get('USERNAME'),
@@ -37,23 +41,6 @@ Token2.post(app.config.get('SALT_API') + '/login', json={
     'password': app.config.get('PASSWORD'),
     'eauth': 'pam',
 })
-
-
-# 登陆相关函数和类
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
-
-
-class User(UserMixin):
-    def __init__(self, user_id):
-        self.id = user_id
-
-
-class LoginForm(FlaskForm):
-    username = StringField('用户名', validators=[InputRequired('用户名是必须的')])
-    password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
-    submit = SubmitField('提交')
 
 
 class ModulesForm(FlaskForm):
@@ -80,27 +67,7 @@ def internal_server_error(error):
     return render_template('500.html'), 500
 
 
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        if username == password:
-            user = User(username)
-            login_user(user)
-            session['logins'] = True
-            flash('Logged in successfully.')
-        return redirect(request.args.get('next') or url_for('index'))
-    return render_template('login.html', form=form)
-
-
-@app.route('/logout/')
-@login_required
-def logout():
-    logout_user()
-    session['logins'] = False
-    return redirect(url_for('index'))
+import schema
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -135,54 +102,6 @@ def index():
     return render_template('index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
 
 
-@app.route('/cmdb/')
-@login_required
-def cmdb():
-
-    return render_template('cmdb.html')
-
-
-@app.route('/minions/')
-@app.route('/minions/<mid>')
-@login_required
-def minions(mid=None):
-    if mid:
-        data = Token.get(app.config.get('SALT_API') + '/minions/%s' % mid).json()
-        return render_template('minion.html', Data=data['return'][0])
-
-    data = Token.get(app.config.get('SALT_API') + '/minions').json()
-    return render_template('minions.html', Data=data['return'][0])
-
-
-@app.route('/jobs/')
-@app.route('/jobs/<jid>')
-@login_required
-def jobs(jid=None):
-    if jid:
-        data = Token.get(app.config.get('SALT_API') + '/jobs/%s' % jid).json()
-        return render_template('job.html', Data=data['info'][0])
-    data = Token.get(app.config.get('SALT_API') + '/jobs').json()
-    return render_template('jobs.html', Data=data['return'][0])
-
-
-@app.route('/keys/')
-@app.route('/keys/<mid>')
-@login_required
-def keys(mid=None):
-    if mid:
-        data = Token.get(app.config.get('SALT_API') + '/keys/%s' % mid).json()
-        return render_template('key.html', Data=data['return']['minions'])
-    data = Token.get(app.config.get('SALT_API') + '/keys').json()
-    return render_template('keys.html', Data=data['return'])
-
-
-@app.route('/stats/')
-@login_required
-def stats():
-    data = Token.get(app.config.get('SALT_API') + '/stats').json()
-    return render_template('stats.html', Data=data)
-
-
 @app.route('/upload/', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -202,6 +121,4 @@ def show_user():
     return render_template('show_user.html', entries=entries)
 
 
-if __name__ == "__main__":
-    app.run()
 

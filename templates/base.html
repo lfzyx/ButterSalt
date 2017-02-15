@@ -22,15 +22,15 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/cmdb/">配置管理</a></li>
+                <li><a href="{{ url_for('cmdb.index') }}">配置管理</a></li>
                 <li><a href="#">持续集成</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SaltStack <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/minions/">Minions</a></li>
-                        <li><a href="/jobs/">Jobs</a></li>
-                        <li><a href="/keys/">Keys</a></li>
-                        <li><a href="/stats/">Stats</a></li>
+                        <li><a href="{{ url_for('saltstack.minions') }}">Minions</a></li>
+                        <li><a href="{{ url_for('saltstack.jobs') }}">Jobs</a></li>
+                        <li><a href="{{ url_for('saltstack.keys') }}">Keys</a></li>
+                        <li><a href="{{ url_for('saltstack.stats') }}">Stats</a></li>
                     </ul>
                 </li>
             </ul>
@@ -42,11 +42,11 @@
                         <li><a href="#">我的主页</a></li>
                         <li><a href="#">账号设置</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{ url_for('logout') }}">logout</a></li>
+                        <li><a href="{{ url_for('logout.index') }}">logout</a></li>
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('login.index') }}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
