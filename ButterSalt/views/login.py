@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
-from index import app
+from ButterSalt import app
 
 login_manager = LoginManager()
 login_manager.login_view = "login.index"

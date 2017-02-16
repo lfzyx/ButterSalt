@@ -14,17 +14,17 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 
 app = Flask(__name__)
-app.config.from_pyfile('config.cfg', silent=True)
+app.config.from_object('config')
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 CSRFProtect(app)
 Token = requests.Session()
 Token2 = requests.Session()
 
-from views.cmdb import cmdb
-from views.saltstack import saltstack
-from views.login import login
-from views.login import logout
+from ButterSalt.views.cmdb import cmdb
+from ButterSalt.views.saltstack import saltstack
+from ButterSalt.views.login import login
+from ButterSalt.views.login import logout
 app.register_blueprint(cmdb)
 app.register_blueprint(saltstack)
 app.register_blueprint(login)
@@ -67,7 +67,7 @@ def internal_server_error(error):
     return render_template('500.html'), 500
 
 
-import schema
+from ButterSalt import schema
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -96,7 +96,7 @@ def index():
             'arg': arg,
             'kwarg': kwarg,
         }).json()['return'][0]['jid']
-        return redirect(url_for('jobs', jid=jid))
+        return redirect(url_for('saltstack.jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
     minions = Token.get(app.config.get('SALT_API') + '/keys').json()
     return render_template('index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)

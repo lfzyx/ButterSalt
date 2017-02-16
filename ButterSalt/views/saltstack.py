@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
-from index import app, Token
+from ButterSalt import app, Token
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 

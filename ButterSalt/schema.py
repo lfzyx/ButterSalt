@@ -1,6 +1,6 @@
 import sqlite3
 from flask import g
-from index import app
+from ButterSalt import app
 
 
 def connect_db():
