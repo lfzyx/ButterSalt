@@ -1,5 +1,4 @@
-{% extends "table-base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
 
 {% block page_content %}
 <form action="" method="post"  class="form" role="form">
@@ -74,11 +73,4 @@
 {{super()}}
 {% endblock page_content%}
 
-{% block table_body %}
-<tbody>
-<tr>
-    <td> {{ Data[i[0]] }} </td>
-</tr>
-</tbody>
-{% endblock table_body %}
 

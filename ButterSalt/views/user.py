@@ -3,11 +3,19 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from werkzeug.utils import secure_filename
 from ButterSalt import app
+import os
 
 login_manager = LoginManager()
-login_manager.login_view = "login.index"
+login_manager.login_view = "user.login"
 login_manager.init_app(app)
+
+
+class Avatar(FlaskForm):
+    file = FileField('文件名', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    submit = SubmitField('上传')
 
 
 # 登陆相关函数和类
@@ -26,32 +34,43 @@ class LoginForm(FlaskForm):
     password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
     submit = SubmitField('提交')
 
-login = Blueprint('login', __name__, url_prefix='/login')
-logout = Blueprint('logout', __name__, url_prefix='/logout')
+user = Blueprint('user', __name__, url_prefix='/user')
 
 
-@login.route('/', methods=['GET', 'POST'])
-def index():
+@user.route('/login', methods=['GET', 'POST'])
+def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
         if username == password:
-            user = User(username)
-            login_user(user)
+            me = User(username)
+            login_user(me)
             session['logins'] = True
             session['username'] = username
             flash('Logged in successfully.')
         return redirect(request.args.get('next') or url_for('index'))
-    return render_template('login.html', form=form)
+    return render_template('user/login.html', form=form)
 
 
-@logout.route('/')
+@user.route('/logout')
 @login_required
-def index():
+def logout():
     logout_user()
     session['logins'] = False
     return redirect(url_for('index'))
+
+
+@user.route('/avatar/', methods=['GET', 'POST'])
+@login_required
+def avatar():
+    form = Avatar()
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save(os.path.join(
+            app.root_path, 'uploadfile', filename
+        ))
+    return render_template('upload.html', form=form)
 
 
 

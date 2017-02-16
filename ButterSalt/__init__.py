@@ -1,5 +1,4 @@
 import json
-import os
 
 import requests
 from flask import Flask, render_template, redirect, url_for, flash, g
@@ -8,8 +7,7 @@ from flask_login import login_required
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
-from flask_wtf.file import FileField, FileRequired, FileAllowed
-from werkzeug.utils import secure_filename
+
 from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 
@@ -23,12 +21,10 @@ Token2 = requests.Session()
 
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
-from ButterSalt.views.login import login
-from ButterSalt.views.login import logout
+from ButterSalt.views.user import user
 app.register_blueprint(cmdb)
 app.register_blueprint(saltstack)
-app.register_blueprint(login)
-app.register_blueprint(logout)
+app.register_blueprint(user)
 
 Token.post(app.config.get('SALT_API') + '/login', json={
     'username': app.config.get('USERNAME'),
@@ -52,9 +48,6 @@ class ModulesForm(FlaskForm):
     submit = SubmitField('提交')
 
 
-class FileForm(FlaskForm):
-    file = FileField('文件名', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
-    submit = SubmitField('上传')
 
 
 @app.errorhandler(404)
@@ -99,26 +92,9 @@ def index():
         return redirect(url_for('saltstack.jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
     minions = Token.get(app.config.get('SALT_API') + '/keys').json()
-    return render_template('index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
+    return render_template('home/index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
 
 
-@app.route('/upload/', methods=['GET', 'POST'])
-@login_required
-def upload():
-    form = FileForm()
-    if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        form.file.data.save(os.path.join(
-            app.root_path, 'uploadfile', filename
-        ))
-    return render_template('upload.html', form=form)
-
-
-@app.route('/user')
-def show_user():
-    cur = g.sqlite_db.execute('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    return render_template('show_user.html', entries=entries)
 
 
 

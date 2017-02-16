@@ -42,11 +42,11 @@
                         <li><a href="#">我的主页</a></li>
                         <li><a href="#">账号设置</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{ url_for('logout.index') }}">logout</a></li>
+                        <li><a href="{{ url_for('user.logout') }}">logout</a></li>
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{{ url_for('login.index') }}">Login</a></li>
+                <li><a href="{{ url_for('user.login') }}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
