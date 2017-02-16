@@ -29,6 +29,14 @@ rest_cherrypy:
 
 `pip3 install -r requirements.txt`
 
-edit the config.cfg and modify the SALT_API option to you salt api address
+edit the config.py and modify the SALT_API option to you salt api address
 
 `python3 index.py`
+
+## Initializing the database
+
+Open up a Python terminal in our repository root.
+
+`from ButterSalt import db`
+
+`db.create_all()`

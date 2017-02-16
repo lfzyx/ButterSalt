@@ -7,9 +7,9 @@ from flask_login import login_required
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect
-
 from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -18,6 +18,7 @@ moment = Moment(app)
 CSRFProtect(app)
 Token = requests.Session()
 Token2 = requests.Session()
+db = SQLAlchemy(app)
 
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
@@ -48,8 +49,6 @@ class ModulesForm(FlaskForm):
     submit = SubmitField('提交')
 
 
-
-
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
@@ -60,7 +59,7 @@ def internal_server_error(error):
     return render_template('500.html'), 500
 
 
-from ButterSalt import schema
+from . import models
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -82,7 +81,6 @@ def index():
             kwarg = {keyarg: wordarg}
         else:
             kwarg = {}
-        schema.add_modules_history(tgt, fun, str(arg), str(kwarg))
         jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
             'tgt': tgt,
             'fun': fun,
