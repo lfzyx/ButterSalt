@@ -42,8 +42,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
-        password = form.password.data
-        if username == password:
+        if username:
             me = User(username)
             login_user(me)
             session['logins'] = True
