@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, flash, redirect, request, url_for, g
+from flask import Blueprint, render_template, session, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired

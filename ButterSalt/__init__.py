@@ -1,7 +1,7 @@
 import json
 
 import requests
-from flask import Flask, render_template, redirect, url_for, flash, g
+from flask import Flask, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_login import login_required
 from flask_moment import Moment
@@ -11,6 +11,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 from flask_sqlalchemy import SQLAlchemy
 
+
 app = Flask(__name__)
 app.config.from_object('config')
 bootstrap = Bootstrap(app)
@@ -19,6 +20,8 @@ CSRFProtect(app)
 Token = requests.Session()
 Token2 = requests.Session()
 db = SQLAlchemy(app)
+
+from .models import MoudleExecuteHistory
 
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
@@ -67,7 +70,6 @@ from . import models
 def index():
     form = ModulesForm()
     if form.validate_on_submit():
-        flash('执行完成!')
         tgt = form.tgt.data
         fun = form.fun.data
         arg = form.arg.data.split()
@@ -87,12 +89,11 @@ def index():
             'arg': arg,
             'kwarg': kwarg,
         }).json()['return'][0]['jid']
+        flash('执行完成')
+        execute = MoudleExecuteHistory(tgt, fun, str(arg), str(kwarg), 1)
+        db.session.add(execute)
+        db.session.commit()
         return redirect(url_for('saltstack.jobs', jid=jid))
     data = Token.get(app.config.get('SALT_API') + '/').json()
     minions = Token.get(app.config.get('SALT_API') + '/keys').json()
     return render_template('home/index.html', Data=data, Minions=json.dumps(minions['return']['minions']), form=form)
-
-
-
-
-
