@@ -20,45 +20,45 @@
 
     {% if form.fun.errors %}
     <div class="form-group has-error required">
-        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="Required">
+        {{ form.fun.label(class="control-label") }} {{ form.fun(class="form-control", placeholder="Required") }}
         <p class="help-block">{% for error in form.fun.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group required">
-        {{ form.fun.label(class="control-label") }}  <input class="form-control" id="fun" name="fun" type="text" value="" placeholder="Required">
+        {{ form.fun.label(class="control-label") }} {{ form.fun(class="form-control", placeholder="Required") }}
     </div>
     {% endif %}
 
     {% if form.arg.errors %}
     <div class="form-group has-error">
-        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="Optional">
+        {{ form.arg.label(class="control-label") }} {{ form.arg(class="form-control", placeholder="Optional") }}
         <p class="help-block">{% for error in form.arg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group">
-        {{ form.arg.label(class="control-label") }}  <input class="form-control" id="arg" name="arg" type="text" value="" placeholder="Optional">
+        {{ form.arg.label(class="control-label") }} {{ form.arg(class="form-control", placeholder="Optional") }}
     </div>
     {% endif %}
 
     {% if form.keyarg.errors %}
     <div class="form-group has-error" style="display: inline-block; vertical-align:middle">
-        {{ form.keyarg.label(class="control-label") }}   <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="Optional">
+        {{ form.keyarg.label(class="control-label") }} {{ form.keyarg(class="form-control", placeholder="Optional") }}
         <p class="help-block">{% for error in form.keyarg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group" style="display: inline-block; vertical-align:middle">
-        {{ form.keyarg.label(class="control-label") }}  <input class="form-control" id="keyarg" name="keyarg" type="text" value="" placeholder="Optional">
+        {{ form.keyarg.label(class="control-label") }} {{ form.keyarg(class="form-control", placeholder="Optional") }}
     </div>
     {% endif %}
     =
     {% if form.wordarg.errors %}
     <div class="form-group has-error" style="display: inline-block; vertical-align:middle">
-        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="Optional">
+        {{ form.wordarg.label(class="control-label") }} {{ form.wordarg(class="form-control", placeholder="Optional") }}
         <p class="help-block">{% for error in form.wordarg.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group" style="display: inline-block; vertical-align:middle">
-        {{ form.wordarg.label(class="control-label") }}   <input class="form-control" id="wordarg" name="wordarg" type="text" value="" placeholder="Optional">
+        {{ form.wordarg.label(class="control-label") }} {{ form.wordarg(class="form-control", placeholder="Optional") }}
     </div>
     {% endif %}
 
