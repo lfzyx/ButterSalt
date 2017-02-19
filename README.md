@@ -31,7 +31,7 @@ rest_cherrypy:
 
 edit the config.py and modify the SALT_API option to you salt api address
 
-`python3 index.py`
+`python3 run.py`
 
 ## Initializing the database
 
