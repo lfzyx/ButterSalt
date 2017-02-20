@@ -30,6 +30,11 @@ print(session.get(url + '/jobs/').json())
 # /KEYS
 print(session.get(url + '/keys/').json())
 
+print(session.post(url, json={
+  "client": "runner",
+  "fun": "manage.up"
+}).json())
+
 
 # /LOGOUT
 print(session.post('http://192.168.1.71:8000/logout').json())
