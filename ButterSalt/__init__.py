@@ -26,9 +26,11 @@ from .models import MoudleExecuteHistory
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
 from ButterSalt.views.user import user
+from ButterSalt.views.deployment import deployment
 app.register_blueprint(cmdb)
 app.register_blueprint(saltstack)
 app.register_blueprint(user)
+app.register_blueprint(deployment)
 
 Token.post(app.config.get('SALT_API') + '/login', json={
     'username': app.config.get('USERNAME'),

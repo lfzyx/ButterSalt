@@ -29,8 +29,8 @@ class Mid:
 
 class StateForm(FlaskForm):
     salt_states = BooleanField('选择模板')
-    salt_states_nfs = SelectField('nfs模板', choices=[('nfs-client', 'nfs-client'), ('nfs-server', 'nfs-server'),
-                                                    (None, "")], option_widget=None)
+    salt_states_nfs = SelectField('nfs', choices=[('nfs-client', 'nfs-client'), ('nfs-server', 'nfs-server'),
+                                                  (None, "")], option_widget=None)
     submit = SubmitField('提交')
 
 
