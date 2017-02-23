@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 
 {% block page_content %}
+<form action="" method="post"  class="form" role="form">
+    {{ form.hidden_tag() }}
+    {% if form.job.errors %}
+    <div class="form-group has-error required" style="display: inline-block; vertical-align:middle">
+        {{ form.job.label(class="control-label") }} {{ form.job(class="form-control", placeholder="输入jenkins中存在的job") }}
+        <p class="help-block">{% for error in form.job.errors %}{{ error }}{% endfor %}</p>
+    </div>
+    {% else %}
+    <div class="form-group required" style="display: inline-block; vertical-align:middle">
+        {{ form.job.label(class="control-label") }} {{ form.job(class="form-control", placeholder="输入jenkins中存在的job") }}
+    </div>
+    {% endif %}
+    <div style="display: block">
+        {{ form.submit(class="btn btn-default") }}
+    </div>
+</form>
+<br>
+
 <table class="table table-hover">
     <thead>
     <tr>
@@ -10,26 +28,13 @@
     </tr>
     </thead>
     <tbody>
-
+    {% for job in jobs %}
     <tr>
-        <td> test-web </td>
-        <td> 1 </td>
-        <td> 2 </td>
+        <td> {{job}} </td>
+        <td> null </td>
+        <td> {{jobs[job]}} </td>
     </tr>
-
-    <tr>
-        <td> test-admin </td>
-        <td> 2 </td>
-        <td> 4 </td>
-    </tr>
-
-    <tr>
-        <td> test-api </td>
-        <td> 4 </td>
-        <td> 4 </td>
-    </tr>
-
-
+    {% endfor %}
     </tbody>
 </table>
 {% endblock page_content %}

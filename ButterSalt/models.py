@@ -62,3 +62,16 @@ class MoudleExecuteHistory(db.Model):
     def __repr__(self):
         return '<Target %r Execute %r with args %r , kwargs %r by user_id %r>' % \
                (self.tgt, self.fun, self.args, self.kwargs, self.user_id)
+
+
+class JenkinsJobs(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    job_name = db.Column(db.String(128))
+    job_deploy_num = db.Column(db.Integer)
+
+    def __init__(self, job_name, job_deploy_num):
+        self.job_name = job_name
+        self.job_deploy_num = job_deploy_num
+
+    def __repr__(self):
+        return '<%r deploy number is %r>' % (self.job_name, self.job_deploy_num)
