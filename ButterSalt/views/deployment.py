@@ -1,21 +1,11 @@
-from flask import Blueprint, flash, redirect, url_for
+from flask import Blueprint, flash
 from flask_login import login_required
 from flask import render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired
-from ButterSalt import app, Token
-import jenkins
-
-
-from ..models import JenkinsJobs
-from .. import db
-
-server = jenkins.Jenkins(
-    app.config.get('JENKINS_API'),
-    username=app.config.get('J_USERNAME'),
-    password=app.config.get('J_PASSWORD')
-)
+from ButterSalt import J_server, db
+from ButterSalt.models import JenkinsJobs
 
 
 class Job(FlaskForm):
@@ -37,5 +27,5 @@ def index():
         flash('添加成功')
     jobs = dict()
     for n in JenkinsJobs.query.all():
-        jobs[n.job_name] = server.get_job_info(n.job_name)['lastSuccessfulBuild']['number']
+        jobs[n.job_name] = J_server.get_job_info(n.job_name)['lastSuccessfulBuild']['number']
     return render_template('deployment/index.html', form=form, jobs=jobs)

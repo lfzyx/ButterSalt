@@ -70,6 +70,3 @@ def avatar():
             app.root_path, 'uploadfile', filename
         ))
     return render_template('upload.html', form=form)
-
-
-
