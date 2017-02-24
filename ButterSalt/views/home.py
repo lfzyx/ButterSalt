@@ -9,6 +9,13 @@ import json
 
 
 class ModulesForm(FlaskForm):
+    """ SaltStack Remote Execution form.
+
+    When you want execute salt modules in web gui, you need a form.
+    This form provide target, module.function, arguments.
+    See (https://docs.saltstack.com/en/getstarted/fundamentals/remotex.html).
+    But sometimes you want use kwargs and don't kown need use ':' or '=', so resolve the kwargs into key and word
+    """
     tgt = StringField('目标', validators=[InputRequired('目标是必须的')])
     fun = StringField('模块', validators=[InputRequired('模块是必须的')])
     arg = StringField('参数', validators=[Optional()])
