@@ -7,14 +7,14 @@
     <div class="form-group has-error required">
         {{ form.tgt.label(class="control-label") }}
         <input class="form-control" id="tgt" name="tgt" type="text" value="" placeholder="Required"
-               autocomplete="off" data-provide="typeahead" data-source='{{ Minions }}' >
+               autocomplete="off" data-provide="typeahead" data-source='{{ tgt_list }}' >
         <p class="help-block">{% for error in form.tgt.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group required">
         {{ form.tgt.label(class="control-label") }}
         <input class="form-control" id="tgt" name="tgt" type="text" value="{{ request.form.tgt }}" placeholder="Required"
-               autocomplete="off" data-provide="typeahead" data-source='{{Minions}}' >
+               autocomplete="off" data-provide="typeahead" data-source='{{tgt_list}}' >
     </div>
     {% endif %}
 

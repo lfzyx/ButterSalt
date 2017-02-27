@@ -5,6 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
+from ButterSalt.saltapi import SaltApi
 
 
 app = Flask(__name__)
@@ -15,11 +16,12 @@ CSRFProtect(app)
 Token = requests.Session()
 db = SQLAlchemy(app)
 
-Token.post(app.config.get('SALT_API') + '/login', json={
-    'username': app.config.get('USERNAME'),
-    'password': app.config.get('PASSWORD'),
-    'eauth': 'pam',
-})
+
+salt = SaltApi(
+    app.config.get('SALT_API'),
+    app.config.get('USERNAME'),
+    app.config.get('PASSWORD')
+)
 
 
 J_server = jenkins.Jenkins(
@@ -27,6 +29,12 @@ J_server = jenkins.Jenkins(
     username=app.config.get('J_USERNAME'),
     password=app.config.get('J_PASSWORD')
 )
+
+Token.post(app.config.get('SALT_API') + '/login', json={
+    'username': app.config.get('USERNAME'),
+    'password': app.config.get('PASSWORD'),
+    'eauth': 'pam',
+})
 
 
 from ButterSalt.views.cmdb import cmdb
