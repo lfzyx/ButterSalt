@@ -20,8 +20,9 @@ print(session.post(url + '/login', json={
 print(session.get(url + '/minions/').json())
 
 print(session.post('http://192.168.1.71:8000/minions', json={
-    'tgt': '*',
+    'tgt': ['HXtest2', 'HXtest3'],
     'fun': 'test.ping',
+    'expr_form': 'list',
 }).json())
 
 # /JOBS
