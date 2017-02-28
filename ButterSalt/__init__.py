@@ -1,4 +1,3 @@
-import requests
 import jenkins
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
@@ -13,7 +12,6 @@ app.config.from_object('config')
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 CSRFProtect(app)
-Token = requests.Session()
 db = SQLAlchemy(app)
 
 
@@ -29,12 +27,6 @@ J_server = jenkins.Jenkins(
     username=app.config.get('J_USERNAME'),
     password=app.config.get('J_PASSWORD')
 )
-
-Token.post(app.config.get('SALT_API') + '/login', json={
-    'username': app.config.get('USERNAME'),
-    'password': app.config.get('PASSWORD'),
-    'eauth': 'pam',
-})
 
 
 from ButterSalt.views.cmdb import cmdb
