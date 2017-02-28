@@ -13,7 +13,6 @@ class ModulesForm(FlaskForm):
     When you want execute salt modules in web gui, you need a form.
     This form provide target, module.function, arguments.
     See (https://docs.saltstack.com/en/getstarted/fundamentals/remotex.html).
-    But sometimes you want use kwargs and don't kown need use ':' or '=', so resolve the kwargs into key and word
     """
     tgt = StringField('目标', validators=[InputRequired('目标是必须的')])
     fun = StringField('模块', validators=[InputRequired('模块是必须的')])
@@ -28,6 +27,13 @@ home = Blueprint('home', __name__)
 @home.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    """ Generate ModulesForm, provide autocomplete required data-source.
+
+    data-source is tgt_list, comes from method salt.get_accepted_keys.
+    Why provide accepted_keys as autocomplete data-source, not based on the what hosts are up？
+    I think is that operator do not need to judgment hosts status,
+    they just need to know which salt modules should be execution on which hosts.
+    """
     form = ModulesForm()
     if form.validate_on_submit():
         d = dict()
