@@ -57,7 +57,7 @@ def login():
 def logout():
     logout_user()
     session['logins'] = False
-    return redirect(url_for('index'))
+    return redirect(url_for('home.index'))
 
 
 @user.route('/avatar/', methods=['GET', 'POST'])
