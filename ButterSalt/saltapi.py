@@ -88,7 +88,11 @@ class SaltApiBase(object):
             responseinfo = self.Token.get(self.address + '/stats')
             return responseinfo.json()
 
-    def execution_command_minions(self, *args, tgt=None, expr_form='glob', fun=None,  **kwargs):
+    def execution_command_minions(self, tgt=None, expr_form='glob', fun=None, args=None, kwargs=None):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         try:
             self.login()
         except LoginError:
@@ -103,20 +107,33 @@ class SaltApiBase(object):
             })
             return responseinfo.json()['return'][0]['jid']
 
-    def execution_command_low(self, *args, client='local', tgt=None, expr_form='glob', fun=None,  **kwargs):
+    def execution_command_low(self, client='local', tgt=None, expr_form='glob', fun=None,  args=None, kwargs=None):
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
         try:
             self.login()
         except LoginError:
             return False
         else:
-            responseinfo = self.Token.post(self.address + '/', json={
-                'client': client,
-                'tgt': tgt,
-                'expr_form': expr_form,
-                'fun': fun,
-                'arg': args,
-                'kwarg': kwargs,
-            })
+            if tgt is None:
+                responseinfo = self.Token.post(self.address + '/', json={
+                    'client': client,
+                    'expr_form': expr_form,
+                    'fun': fun,
+                    'arg': args,
+                    'kwarg': kwargs,
+                })
+            else:
+                responseinfo = self.Token.post(self.address + '/', json={
+                    'client': client,
+                    'tgt': tgt,
+                    'expr_form': expr_form,
+                    'fun': fun,
+                    'arg': args,
+                    'kwarg': kwargs,
+                })
             return responseinfo.json()['return'][0]
 
 
@@ -127,19 +144,3 @@ class SaltApi(SaltApiBase):
 
     def get_accepted_keys(self):
         return json.dumps(self.get_keys()['minions'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, url_for
 from flask_login import login_required
 from flask import render_template
-from ButterSalt import app, Token
+from ButterSalt import salt
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, BooleanField, SelectField
 
@@ -11,19 +11,11 @@ class Mid:
         self.tgt = tgt
 
     def get_uptime(self):
-        data = Token.post(app.config.get('SALT_API') + '/', json={
-                "client": "local",
-                "tgt": self.tgt,
-                "fun": "status.uptime"
-            }).json()
+        data = salt.execution_command_low(tgt=self.tgt, fun="status.uptime")
         return data
 
     def get_grains(self):
-        data = Token.post(app.config.get('SALT_API') + '/', json={
-            "client": "local",
-            "tgt": self.tgt,
-            "fun": "grains.items"
-        }).json()
+        data = salt.execution_command_low(tgt=self.tgt, fun="grains.items")
         return data
 
 
@@ -40,11 +32,8 @@ cmdb = Blueprint('cmdb', __name__, url_prefix='/cmdb')
 @cmdb.route('/')
 @login_required
 def index():
-    data = Token.post(app.config.get('SALT_API') + '/', json={
-            "client": "runner",
-            "fun": "manage.status"
-        }).json()
-    return render_template('cmdb/index.html', up=data['return'][0]['up'], down=data['return'][0]['down'])
+    data = salt.execution_command_low(client='runner', fun="manage.status")
+    return render_template('cmdb/index.html', up=data['up'], down=data['down'])
 
 
 @cmdb.route('/manage/')
@@ -60,15 +49,11 @@ def manage(mid=None):
             __list = form.salt_states.raw_data.copy()
 
         __list = (','.join(__list))
+        jid = salt.execution_command_minions(tgt=mid, fun='state.apply', args=[__list])
 
-        jid = Token.post(app.config.get('SALT_API') + '/minions/', json={
-            'tgt': mid,
-            'fun': 'state.apply',
-            'arg': [__list],
-        }).json()['return'][0]['jid']
         flash('执行完成')
         return redirect(url_for('saltstack.jobs', jid=jid))
     mid_grains = Mid(mid)
-    return render_template('cmdb/manage.html', uptime=mid_grains.get_uptime()['return'][0][mid],
-                           grains=mid_grains.get_grains()['return'][0][mid],
+    return render_template('cmdb/manage.html', uptime=mid_grains.get_uptime()[mid],
+                           grains=mid_grains.get_grains()[mid],
                            form=form)
