@@ -71,7 +71,7 @@ class ButterSaltTestCase(unittest.TestCase):
             fun='test.arg',
             kwarg='lol=wow'
         ), follow_redirects=True)
-        assert '[{&#39;__kwarg__&#39;: True' in str(rv.data)
+        assert '__kwarg__' in str(rv.data)
 
 
 if __name__ == '__main__':
