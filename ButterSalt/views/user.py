@@ -48,7 +48,7 @@ def login():
             session['logins'] = True
             session['username'] = username
             flash('Logged in successfully.')
-        return redirect(request.args.get('next') or url_for('index'))
+        return redirect(request.args.get('next') or url_for('home.index'))
     return render_template('user/login.html', form=form)
 
 
