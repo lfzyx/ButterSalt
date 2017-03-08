@@ -63,12 +63,14 @@ class ButterSaltTestCase(unittest.TestCase):
             arg="/proc lol"
         ), follow_redirects=True)
         assert '<th> Arguments </th>' in str(rv.data)
+        assert '__kwarg__' not in str(rv.data)
 
     def test_execution_command_testkwarg(self):
         self.login('admin', 'default')
         rv = self.app.post('/', data=dict(
             tgt='HXtest3',
             fun='test.arg',
+            arg="/proc lol",
             kwarg='lol=wow'
         ), follow_redirects=True)
         assert '__kwarg__' in str(rv.data)
