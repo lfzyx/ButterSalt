@@ -9,13 +9,13 @@
     </tr>
     </thead>
     <tbody>
-    {% for n in up %}
+    {% for n in up|sort %}
     <tr>
         <td> <a href="{{ url_for('cmdb.manage') }}{{ n }}">{{ n }}</a> </td>
         <td class="success"> 在线 </td>
     </tr>
     {% endfor %}
-    {% for n in down %}
+    {% for n in down|sort %}
     <tr>
         <td> {{ n }}</a> </td>
         <td class="danger"> 离线 </td>
