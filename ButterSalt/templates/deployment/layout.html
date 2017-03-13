@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<div class="col-md-2">
+    <ul id="main-nav" class="nav nav-tabs nav-stacked">
+
+        <li>
+            <a href="#systemSetting" class="nav-header collapsed" data-toggle="collapse">
+                <i class="glyphicon glyphicon-cog"></i>
+                基础应用
+            </a>
+        </li>
+        <li>
+            <a href="./plans.html">
+                <i class="glyphicon glyphicon-credit-card"></i>
+                业务应用
+            </a>
+        </li>
+
+    </ul>
+</div>
+<div class="col-md-10">
+    {% block deployment_content %}
+    {% endblock deployment_content %}
+</div>
+
+
+{% endblock page_content %}
