@@ -1,0 +1,22 @@
+{% extends "deployment/layout.html" %}
+
+{% block deployment_content %}
+
+<form action="" method="post"  class="form" role="form">
+    {{ form.hidden_tag() }}
+    {% if form.state.errors %}
+    <div class="form-group has-error required" style="display: inline-block; vertical-align:middle">
+        {{ form.state.label(class="control-label") }} {{ form.state(class="form-control", placeholder="添加Salt state模板") }}
+        <p class="help-block">{% for error in form.state.errors %}{{ error }}{% endfor %}</p>
+    </div>
+    {% else %}
+    <div class="form-group required" style="display: inline-block; vertical-align:middle">
+        {{ form.state.label(class="control-label") }} {{ form.state(class="form-control", placeholder="添加Salt state模板") }}
+    </div>
+    {% endif %}
+    <div style="display: block">
+        {{ form.submit(class="btn btn-default") }}
+    </div>
+</form>
+
+{% endblock deployment_content %}

@@ -26,7 +26,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">应用部署 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">基础应用</a></li>
+                        <li><a href="{{ url_for('deployment.system') }}">基础应用</a></li>
                         <li><a href="{{ url_for('deployment.operation') }}">业务应用</a></li>
                     </ul>
                 </li>

@@ -1,0 +1,24 @@
+{% extends "deployment/layout.html" %}
+
+{% block deployment_content %}
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>名称</th>
+        <th>绑定配置</th>
+        <th>绑定主机</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for name in list %}
+    <tr>
+        <td> {{name}} </td>
+        <td> null </td>
+        <td> {{name[host]}} </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock deployment_content %}
