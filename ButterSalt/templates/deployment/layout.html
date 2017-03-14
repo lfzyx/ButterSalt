@@ -2,28 +2,27 @@
 
 {% block page_content %}
 
-<div class="col-md-2">
-    <ul id="main-nav" class="nav nav-tabs nav-stacked">
-
-        <li>
-            <a href="#systemSetting" class="nav-header collapsed" data-toggle="collapse">
-                <i class="glyphicon glyphicon-cog"></i>
-                基础应用
-            </a>
-        </li>
-        <li>
-            <a href="./plans.html">
-                <i class="glyphicon glyphicon-credit-card"></i>
-                业务应用
-            </a>
-        </li>
-
-    </ul>
+<div class="row">
+    <div class="col-sm-2">
+        <ul id="main-nav" class="nav">
+            <div class="panel-heading panel">
+                <li>
+                    <a href="{{ url_for('deployment.operation_add') }}">
+                        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 应用添加
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> 配置包
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
+    <div class="col-sm-10">
+        {% block deployment_content %}
+        {% endblock deployment_content %}
+    </div>
 </div>
-<div class="col-md-10">
-    {% block deployment_content %}
-    {% endblock deployment_content %}
-</div>
-
 
 {% endblock page_content %}

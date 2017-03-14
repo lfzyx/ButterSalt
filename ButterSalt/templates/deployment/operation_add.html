@@ -2,27 +2,6 @@
 
 {% block deployment_content %}
 
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>应用</th>
-        <th>生产环境版本</th>
-        <th>最新编译版本</th>
-        <th>绑定环境</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for job in jobs %}
-    <tr>
-        <td> {{job}} </td>
-        <td> null </td>
-        <td> {{jobs[job]}} </td>
-        <td> 0 </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
 <form action="" method="post"  class="form" role="form">
     {{ form.hidden_tag() }}
     {% if form.job.errors %}
@@ -39,4 +18,5 @@
         {{ form.submit(class="btn btn-default") }}
     </div>
 </form>
+
 {% endblock deployment_content %}

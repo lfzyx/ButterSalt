@@ -1,0 +1,26 @@
+{% extends "deployment/layout.html" %}
+
+{% block deployment_content %}
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>应用</th>
+        <th>生产环境版本</th>
+        <th>最新编译版本</th>
+        <th>绑定环境</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for job in jobs %}
+    <tr>
+        <td> {{job}} </td>
+        <td> null </td>
+        <td> {{jobs[job]}} </td>
+        <td> 0 </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock deployment_content %}

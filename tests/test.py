@@ -37,7 +37,13 @@ class ButterSaltTestCase(unittest.TestCase):
 
     def test_deployment(self):
         self.login('admin', 'default')
-        rv = self.app.get('/deployment/', follow_redirects=True)
+        rv = self.app.get('/deployment/operation', follow_redirects=True)
+        assert '<table class="table table-hover">' in str(rv.data)
+        assert '/user/logout' in str(rv.data)
+
+    def test_deployment_add(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/deployment/operation/add', follow_redirects=True)
         assert '<input class="form-control" id="job" name="job"' in str(rv.data)
         assert '/user/logout' in str(rv.data)
 
