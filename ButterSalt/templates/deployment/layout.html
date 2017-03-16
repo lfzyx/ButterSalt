@@ -7,13 +7,13 @@
         <ul id="main-nav" class="nav">
             <div class="panel-heading panel">
                 <li>
-                    <a href="add">
-                        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 应用添加
+                    <a href="{{ url_for('deployment.operation') }}">
+                        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 应用列表
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> 配置包
+                    <a href="{{ url_for('deployment.operation') }}deployconfig">
+                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> 配置列表
                     </a>
                 </li>
             </div>
