@@ -41,15 +41,21 @@ class SaltApiBase(object):
 
         :return: True
         """
-        responseinfo = self.Token.post(self.address + '/login', json={
-            'username': self.username,
-            'password': self.password,
-            'eauth': self.eauth,
-        })
-        if responseinfo.status_code == 200:
-            return True
+        try:
+            responseinfo = self.Token.post(self.address + '/login', json={
+                'username': self.username,
+                'password': self.password,
+                'eauth': self.eauth,
+            })
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError, requests.exceptions.Timeout,
+                requests.exceptions.TooManyRedirects, requests.exceptions.RequestException) as err:
+            raise LoginError('Requests Failed')
+
         else:
-            raise LoginError('Login Failed')
+            if responseinfo.status_code == 200:
+                return True
+            else:
+                raise LoginError('Login Failed')
 
     def get_keys(self, key=None):
         """ salt.netapi.rest_cherrypy.app.Keys!
