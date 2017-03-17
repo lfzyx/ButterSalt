@@ -7,6 +7,7 @@ from wtforms.validators import InputRequired
 from ButterSalt import J_server, db
 from ButterSalt.models import JenkinsJobs
 from pathlib import Path
+import re
 
 
 class Job(FlaskForm):
@@ -73,7 +74,7 @@ def operation_deployconfig(files=None, file=None):
 
     if files:
         q = p / files
-        _files = [x.name for x in q.iterdir()]
+        _files = [x.name for x in q.iterdir() if not re.match('^\.', x.name)]
         return render_template('deployment/operation_deployconfig_files.html', files=_files)
 
     return render_template('deployment/operation_deployconfig.html', subdirectories=_subdirectories)
