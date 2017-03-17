@@ -1,26 +1,58 @@
-{% extends "deployment/layout.html" %}
+{% extends "base.html" %}
 
-{% block deployment_content %}
+{% block page_content %}
 
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>应用</th>
-        <th>生产环境版本</th>
-        <th>最新编译版本</th>
-        <th>绑定环境</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for job in jobs %}
-    <tr>
-        <td> {{job}} </td>
-        <td> null </td>
-        <td> {{jobs[job]}} </td>
-        <td> 0 </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-sm-2">
+        <ul id="main-nav" class="nav">
+            <div class="panel-heading panel">
+                <li>
+                    <a href="{{ url_for('deployment.operation') }}">
+                        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 应用列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('deployment.operation') }}deployconfig">
+                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> 配置列表
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
+    <div class="col-sm-10">
+        {% block deployment_content %}
+        <form action="" method="post"  class="form" role="form">
+            {{ form.hidden_tag() }}
+            <div class="form-group required" style="display: inline-block; vertical-align:middle">
+                {{ form.application.label(class="control-label") }}
+                {{ form.application(class="control-label") }}
+            </div>
+            <div style="display: block">
+                {{ form.submit(class="btn btn-default") }}
+            </div>
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>应用</th>
+                <th>生产环境版本</th>
+                <th>最新编译版本</th>
+                <th>绑定环境</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td> {{job}} </td>
+                <td> null </td>
+                <td> {{jobs[job]}} </td>
+                <td> 0 </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endblock deployment_content %}
+    </div>
+</div>
 
-{% endblock deployment_content %}
+{% endblock page_content %}
