@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, url_for, request
+from flask import Blueprint, flash, redirect, url_for
 from flask_login import login_required
 from flask import render_template
 from flask_wtf import FlaskForm
@@ -6,7 +6,7 @@ from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import InputRequired
 import jenkins
 from ButterSalt import J_server, db
-from ButterSalt.models import JenkinsJobs
+from ButterSalt.models import ProductApplications
 from pathlib import Path
 import re
 
@@ -29,9 +29,9 @@ class TextEdit(FlaskForm):
 deployment = Blueprint('deployment', __name__, url_prefix='/deployment')
 
 
-@deployment.route('/operation/', methods=['GET', 'POST'])
+@deployment.route('/product/', methods=['GET', 'POST'])
 @login_required
-def operation():
+def product():
     jobs = J_server.get_jobs()
     l = list()
     for n in jobs:
@@ -40,25 +40,25 @@ def operation():
     form.application.choices = l
     if form.validate_on_submit():
         application = form.application.data
-        execute = JenkinsJobs(application, None)
+        execute = ProductApplications(application, 1, 'env', 'lfzyx', None, '2017')
         db.session.add(execute)
         db.session.commit()
         flash('添加成功')
-        return redirect(url_for('deployment.operation'))
+        return redirect(url_for('deployment.product'))
     jobs = dict()
-    for n in JenkinsJobs.query.all():
+    for n in ProductApplications.query.all():
         try:
-            jobs[n.job_name] = J_server.get_job_info(n.job_name)['lastSuccessfulBuild']['number']
+            jobs[n.name] = J_server.get_job_info(n.name)['lastSuccessfulBuild']['number']
         except jenkins.NotFoundException as err:
             print('jenkins exception: {0}'.format(err))
-    return render_template('deployment/operation.html', jobs=jobs, form=form)
+    return render_template('deployment/product.html', jobs=jobs, form=form)
 
 
-@deployment.route('/operation/deployconfig/',  methods=['GET', 'POST'])
-@deployment.route('/operation/deployconfig/<files>/',  methods=['GET', 'POST'])
-@deployment.route('/operation/deployconfig/<files>/<file>',  methods=['GET', 'POST'])
+@deployment.route('/product/deployconfig/',  methods=['GET', 'POST'])
+@deployment.route('/product/deployconfig/<files>/',  methods=['GET', 'POST'])
+@deployment.route('/product/deployconfig/<files>/<file>',  methods=['GET', 'POST'])
 @login_required
-def operation_deployconfig(files=None, file=None):
+def product_deployconfig(files=None, file=None):
     p = Path('file/deployconfig')
     if not p.exists():
         p.mkdir(parents=True)
@@ -70,17 +70,17 @@ def operation_deployconfig(files=None, file=None):
         if form.validate_on_submit():
             with q.open(mode='w') as f:
                 f.write(form.content.data)
-            return redirect(url_for('deployment.operation_deployconfig', files=files))
+            return redirect(url_for('deployment.product_deployconfig', files=files))
         with q.open() as f:
             text = f.readlines()
-        return render_template('deployment/operation_deployconfig_files_edit.html', text=text, form=form)
+        return render_template('deployment/product_deployconfig_files_edit.html', text=text, form=form)
 
     if files:
         q = p / files
         _files = [x.name for x in q.iterdir() if not re.match('^\.', x.name)]
-        return render_template('deployment/operation_deployconfig_files.html', files=_files)
+        return render_template('deployment/product_deployconfig_files.html', files=_files)
 
-    return render_template('deployment/operation_deployconfig.html', subdirectories=_subdirectories)
+    return render_template('deployment/product_deployconfig.html', subdirectories=_subdirectories)
 
 
 @deployment.route('/system/')

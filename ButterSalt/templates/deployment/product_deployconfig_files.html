@@ -1,4 +1,4 @@
-{% extends "deployment/operation.html" %}
+{% extends "deployment/product.html" %}
 
 {% block deployment_content %}
 
@@ -6,19 +6,19 @@
     <thead>
     <tr>
         <th>名称</th>
-        <th>版本</th>
-        <th>绑定应用</th>
+        <th>上次修改时间</th>
     </tr>
     </thead>
     <tbody>
-    {% for item in subdirectories %}
+    {% for item in files %}
     <tr>
         <td> <a href="{{item}}">{{item}}</a> </td>
         <td> null </td>
-        <td> 0 </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+
+
 
 {% endblock deployment_content %}

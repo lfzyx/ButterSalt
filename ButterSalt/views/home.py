@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 from flask_wtf import FlaskForm
 from flask_login import login_required
-from ButterSalt.models import MoudleExecuteHistory
+from ButterSalt.models import SaltExecuteHistory
 from ButterSalt import db, salt
 
 
@@ -46,7 +46,7 @@ def index():
             d[kw[0]] = kw[1]
         jid = salt.execution_command_minions(tgt=tgt, fun=fun, args=arg, kwargs=d)
         flash('执行完成')
-        execute = MoudleExecuteHistory(tgt, fun, str(arg), str(d), 1)
+        execute = SaltExecuteHistory(tgt, fun, str(arg), str(d), 1)
         db.session.add(execute)
         db.session.commit()
         return redirect(url_for('saltstack.jobs', jid=jid))
