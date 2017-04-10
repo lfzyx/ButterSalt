@@ -3,7 +3,7 @@ from . import db
 
 class HostManagement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     bind_product_application = db.Column(db.String(128))
     bind_system_application = db.Column(db.String(128))
     creator = db.Column(db.String(128), nullable=False)
@@ -79,20 +79,24 @@ class SaltExecuteHistory(db.Model):
 
 class ProductApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, nullable=False)
-    online_version = db.Column(db.String(128))
+    name = db.Column(db.String(128), nullable=False)
     bind_host = db.Column(db.String(128))
+    bind_configuration_group = db.Column(db.String(128))
+    version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
+    online_version = db.Column(db.String(128))
 
-    def __init__(self, name, online_version, bind_host, creator, modifer, last_modify_time):
+    def __init__(self, name, online_version, bind_host, bind_configuration_group, version, creator, modifer, last_modify_time):
         self.name = name
-        self.online_version = online_version
         self.bind_host = bind_host
+        self.bind_configuration_group = bind_configuration_group
+        self.version = version
         self.creator = creator
         self.modifer = modifer
         self.last_modify_time = last_modify_time
+        self.online_version = online_version
 
     def __repr__(self):
         return '<%r deploy number is %r>' % (self.name, self.online_version)
@@ -101,14 +105,16 @@ class ProductApplications(db.Model):
 class ProductApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, nullable=False)
+    group = db.Column(db.String(128))
     bind_application = db.Column(db.String(128))
     version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
 
-    def __init__(self, name, bind_application, version, creator, modifer, last_modify_time):
+    def __init__(self, name, group, bind_application, version, creator, modifer, last_modify_time):
         self.name = name
+        self.group = group
         self.bind_application = bind_application
         self.version = version
         self.creator = creator
@@ -118,31 +124,35 @@ class ProductApplicationsConfigurations(db.Model):
 
 class SystemApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     bind_host = db.Column(db.String(128))
+    bind_configuration_group = db.Column(db.String(128))
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
 
-    def __init__(self, name, bind_host, creator, modifer, last_modify_time):
+    def __init__(self, name, bind_host, bind_configuration_group, creator, modifer, last_modify_time):
         self.name = name
         self.bind_host = bind_host
+        self.bind_configuration_group = bind_configuration_group
         self.creator = creator
         self.modifer = modifer
-        self.last_edit_time = last_modify_time
+        self.last_modify_time = last_modify_time
 
 
 class SystemApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, nullable=False)
+    group = db.Column(db.String(128))
     bind_application = db.Column(db.String(128))
     version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
 
-    def __init__(self, name, bind_application, version, creator, modifer, last_modify_time):
+    def __init__(self, name, group, bind_application, version, creator, modifer, last_modify_time):
         self.name = name
+        self.group = group
         self.bind_application = bind_application
         self.version = version
         self.creator = creator

@@ -21,20 +21,23 @@
     </div>
     <div class="col-sm-10">
         {% block deployment_content %}
+        <a class="btn btn-default" href="add" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</a>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th>名称</th>
-                <th>绑定配置</th>
                 <th>绑定主机</th>
+                <th>绑定配置</th>
+                <th>上次修改</th>
             </tr>
             </thead>
             <tbody>
-            {% for name in list %}
+            {% for n in list %}
             <tr>
-                <td> {{name}} </td>
-                <td> null </td>
-                <td> {{name[host]}} </td>
+                <td> <a href="{{ n['name'] }}">{{ n['name'] }}</a> </td>
+                <td> {{n['bind_host']}} </td>
+                <td> {{n['bind_configuration_group']}} </td>
+                <td> {{n['last_modify_time']}} </td>
             </tr>
             {% endfor %}
             </tbody>
