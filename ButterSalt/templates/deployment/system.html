@@ -27,8 +27,6 @@
             <tr>
                 <th>名称</th>
                 <th>绑定主机</th>
-                <th>绑定配置</th>
-                <th>上次修改</th>
             </tr>
             </thead>
             <tbody>
@@ -36,8 +34,6 @@
             <tr>
                 <td> <a href="{{ n['name'] }}">{{ n['name'] }}</a> </td>
                 <td> {{n['bind_host']}} </td>
-                <td> {{n['bind_configuration_group']}} </td>
-                <td> {{n['last_modify_time']}} </td>
             </tr>
             {% endfor %}
             </tbody>

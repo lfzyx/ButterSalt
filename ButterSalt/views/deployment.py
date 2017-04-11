@@ -5,8 +5,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import InputRequired
 import jenkins
-from ButterSalt import J_server, db
-from ButterSalt.models import ProductApplications, SystemApplications
+from ButterSalt import J_server, db, salt
+from ButterSalt import models
 from pathlib import Path
 import re
 import datetime
@@ -15,7 +15,6 @@ import datetime
 class FormSystemApplication(FlaskForm):
     name = StringField('应用名称', validators=[InputRequired('名称是必填的')])
     bind_host = StringField('绑定主机')
-    bind_configuration_group = StringField('绑定配置')
     submit = SubmitField('保存')
 
 
@@ -38,7 +37,7 @@ deployment = Blueprint('deployment', __name__, url_prefix='/deployment')
 @login_required
 def product():
     jobs = dict()
-    for n in ProductApplications.query.all():
+    for n in models.ProductApplications.query.all():
         try:
             jobs[n.name] = J_server.get_job_info(n.name)['lastSuccessfulBuild']['number']
         except jenkins.NotFoundException as err:
@@ -57,7 +56,7 @@ def product_add():
     form.name.choices = l
     if form.validate_on_submit():
         name = form.name.data
-        execute = ProductApplications(name, 1, 'env', 'lfzyx', None, '2017')
+        execute = models.ProductApplications(name, 1, 'env', 'lfzyx', None, '2017')
         db.session.add(execute)
         db.session.commit()
         flash('添加成功')
@@ -95,13 +94,19 @@ def product_deployconfig(files=None, file=None):
 
 
 @deployment.route('/system/')
+@deployment.route('/system/<name>/')
 @login_required
-def system():
+def system(name=None):
+    if name:
+        listdata = list()
+        for n in models.SystemApplications.query.filter_by(name=name):
+            listdata.append({'name': n.name, 'bind_host': n.bind_host,'last_modify_time': n.last_modify_time})
+        return render_template('deployment/system.html', list=listdata)
+
     listdata = list()
-    for n in SystemApplications.query.all():
-        listdata.append({'name': n.name, 'bind_host': n.bind_host,
-                         'bind_configuration_group': n.bind_configuration_group,
-                         'last_modify_time': n.last_modify_time})
+    for n in models.SystemApplications.query.all():
+        listdata.append({'name': n.name, 'bind_host': models.SystemApplications.query.filter_by(name=n.name).count()})
+    listdata = [dict(t) for t in set([tuple(d.items()) for d in listdata])]
     return render_template('deployment/system.html', list=listdata)
 
 
@@ -112,10 +117,12 @@ def system_add():
     if form.validate_on_submit():
         name = form.name.data
         bind_host = form.bind_host.data
-        bind_configuration_group = form.bind_configuration_group.data
-        execute = SystemApplications(name, bind_host, bind_configuration_group, session['username'], None, datetime.datetime.now())
+        if bind_host:
+            salt.execution_command_minions(tgt=bind_host, fun='state.apply', args=name)
+        execute = models.SystemApplications(
+            name, bind_host, session['username'], None, datetime.datetime.now())
         db.session.add(execute)
         db.session.commit()
-        flash('添加成功')
+        flash('保存成功')
         return redirect(url_for('deployment.system'))
     return render_template('deployment/system_add.html', form=form)
