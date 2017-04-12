@@ -3,7 +3,11 @@
 {% block table_body %}
 <tbody>
 <tr>
+    {% if i[0] ==  "Result" %}
+    <td>  {{ pretty|replace("\n", "<br>")|replace(" ","&nbsp;")|safe}} </td>
+    {% else %}
     <td> {{ Data[i[0]] }} </td>
+    {% endif %}
 </tr>
 </tbody>
 {% endblock table_body %}

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 from ButterSalt import salt
+import json
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
@@ -21,7 +22,8 @@ def minions(mid=None):
 def jobs(jid=None):
     data = salt.get_jobs(jid)
     if jid:
-        return render_template('saltstack/job.html', Data=data)
+        pretty = json.dumps(data["Result"], indent=4)
+        return render_template('saltstack/job.html', Data=data, pretty=pretty)
     return render_template('saltstack/jobs.html', Data=data)
 
 
