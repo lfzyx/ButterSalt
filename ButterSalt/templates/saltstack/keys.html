@@ -4,7 +4,23 @@
 <tbody>
 {% for n in Data[i[0]] %}
 <tr>
-    <td> <a href="{{ n }}">{{ n }}</a> </td>
+    {% if i[0] == "minions" %}
+    <td> <a href="{{ n }}" style="float:left;">{{ n }}</a>
+        <form action method="post">
+            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+            <button type="submit"  name="delete" value="{{ n }}" style="float:left;">删除</button>
+        </form>
+    </td>
+    {% elif i[0] == "minions_pre" %}
+    <td> <span style="float:left;">{{ n }} </span>
+        <form action method="post">
+            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+            <button type="submit"  name="accept" value="{{ n }}" style="float:left;">添加</button>
+        </form>
+    </td>
+    {% else %}
+    <td> {{ n }} </td>
+    {% endif %}
 </tr>
 {% endfor %}
 </tbody>

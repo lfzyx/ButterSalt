@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 from ButterSalt import salt
 import json
@@ -27,13 +27,19 @@ def jobs(jid=None):
     return render_template('saltstack/jobs.html', Data=data)
 
 
-@saltstack.route('/keys/')
+@saltstack.route('/keys/',  methods=['GET', 'POST'])
 @saltstack.route('/keys/<mid>')
 @login_required
 def keys(mid=None):
     data = salt.get_keys(mid)
     if mid:
         return render_template('saltstack/key.html', Data=data)
+    if request.method == 'POST':
+        if 'delete' in request.form:
+            salt.delete_key(request.form.get('delete'))
+        elif 'accept' in request.form:
+            salt.accept_key(request.form.get('accept'))
+        data = salt.get_keys(mid)
     return render_template('saltstack/keys.html', Data=data)
 
 

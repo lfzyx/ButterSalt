@@ -75,6 +75,38 @@ class SaltApiBase(object):
                 responseinfo = self.Token.get(self.address + '/keys')
                 return responseinfo.json()['return']
 
+    def delete_key(self, key):
+        """ salt.wheel.key.delete!
+        
+        """
+        try:
+            self.login()
+        except LoginError:
+            return False
+        else:
+            responseinfo = self.Token.post(self.address + '/', json={
+                'client': "wheel",
+                'fun': "key.delete",
+                'match': key,
+            })
+            return responseinfo.json()['return'][0]['data']['success']
+
+    def accept_key(self, key):
+        """ salt.wheel.key.delete!
+
+        """
+        try:
+            self.login()
+        except LoginError:
+            return False
+        else:
+            responseinfo = self.Token.post(self.address + '/', json={
+                'client': "wheel",
+                'fun': "key.accept",
+                'match': key,
+            })
+            return responseinfo.json()['return'][0]['data']['success']
+
     def get_jobs(self, jid=None):
         """ salt.netapi.rest_cherrypy.app.Jobs！
 
@@ -200,3 +232,4 @@ class SaltApi(SaltApiBase):
 
     def get_accepted_keys(self):
         return json.dumps(self.get_keys()['minions'])
+
