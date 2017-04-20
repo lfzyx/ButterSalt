@@ -1,18 +1,29 @@
 {% extends "saltstack/table-base.html" %}
 
-{% block table_body %}
+{% block page_content %}
+
+<table class="table table-hover">
+{% for i in Data|dictsort %}
+<thead>
+<tr>
+    <th>{% block href scoped %} {{ i[0] }} {% endblock href %}</th>
+</tr>
+</thead>
+{% block table_body scoped %}
 <tbody>
 {% for n in Data[i[0]] %}
 <tr>
     {% if i[0] == "minions" %}
-    <td> <a href="{{ n }}" style="float:left;">{{ n }}</a>
+    <td> <a href="{{ n }}" >{{ n }}</a></td>
+    <td>
         <form action method="post">
             <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
             <button type="submit"  name="delete" value="{{ n }}" style="float:left;">删除</button>
         </form>
     </td>
     {% elif i[0] == "minions_pre" %}
-    <td> <span style="float:left;">{{ n }} </span>
+    <td>{{ n }}</td>
+    <td>
         <form action method="post">
             <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
             <button type="submit"  name="accept" value="{{ n }}" style="float:left;">添加</button>
@@ -20,10 +31,17 @@
     </td>
     {% else %}
     <td> {{ n }} </td>
+    <td></td>
     {% endif %}
 </tr>
 {% endfor %}
 </tbody>
 {% endblock table_body %}
+{% endfor %}
+</table>
+
+
+
+{% endblock page_content %}
 
 
