@@ -4,11 +4,16 @@ from . import db
 class HostManagement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    bind_product_application = db.Column(db.String(128))
-    bind_system_application = db.Column(db.String(128))
+    bind_product_application = db.Column(db.Integer, db.ForeignKey('product_applications.id'))
+    bind_system_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
+
+    def __repr__(self):
+        return "<HostManagement" \
+               "(name=%s, bind_product_application=%s, bind_system_application=%s, creator=%s)>" % \
+               (self.name, self.bind_product_application, self.bind_system_application, self.creator)
 
 
 class Users(db.Model):
@@ -16,16 +21,12 @@ class Users(db.Model):
     username = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), unique=True, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    role = db.Column(db.String(128), nullable=False)
-
-    def __init__(self, username, password, email, role):
-        self.username = username
-        self.password = password
-        self.email = email
-        self.role = role
+    role = db.Column(db.Integer, db.ForeignKey('user_role.id'))
 
     def __repr__(self):
-        return '<User %r with email %r role %r>' % (self.username, self.email, self.role)
+        return "<Users" \
+               "(username=%s, password=%s, email=%s, role=%s)>" % \
+               (self.username, self.password, self.email, self.role)
 
 
 class UserRole(db.Model):
@@ -34,24 +35,17 @@ class UserRole(db.Model):
     salt_username = db.Column(db.String(128))
     salt_password = db.Column(db.String(128))
 
-    def __init__(self, name, salt_username, salt_password):
-        self.name = name
-        self.salt_username = salt_username
-        self.salt_password = salt_password
-
     def __repr__(self):
-        return '<UserRole is saltstack pam user %r>' % (self.salt_username,)
+        return "<UserRole" \
+               "(name=%s, salt_username=%s, salt_password=%s)>" % \
+               (self.name, self.salt_username, self.salt_password, )
 
 
 class UserRoleAuthority(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, nullable=False)
-    role = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.Integer, db.ForeignKey('user_role.id'))
     resources = db.Column(db.String(128), nullable=False)
-
-    def __init__(self, name, role):
-        self.name = name
-        self.role = role
 
     def __repr__(self):
         return '<authority %r in role_id %r>' % (self.name, self.role)
@@ -65,94 +59,68 @@ class SaltExecuteHistory(db.Model):
     kwargs = db.Column(db.String(128))
     user = db.Column(db.String(128), nullable=False)
 
-    def __init__(self, tgt, fun, args, kwargs, user):
-        self.tgt = tgt
-        self.fun = fun
-        self.args = args
-        self.kwargs = kwargs
-        self.user = user
-
     def __repr__(self):
-        return '<Target %r Execute %r with args %r , kwargs %r by user %r>' % \
+        return "<SaltExecuteHistory" \
+               "(tgt=%s, fun=%s, args=%s, kwargs=%s, user=%s)>" % \
                (self.tgt, self.fun, self.args, self.kwargs, self.user)
 
 
 class ProductApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    bind_host = db.Column(db.String(128))
-    bind_configuration_group = db.Column(db.String(128))
-    version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
-    online_version = db.Column(db.String(128))
-
-    def __init__(self, name, online_version, bind_host, bind_configuration_group, version, creator, modifer, last_modify_time):
-        self.name = name
-        self.bind_host = bind_host
-        self.bind_configuration_group = bind_configuration_group
-        self.version = version
-        self.creator = creator
-        self.modifer = modifer
-        self.last_modify_time = last_modify_time
-        self.online_version = online_version
+    integration_version = db.Column(db.String(128))
+    delivery_version = db.Column(db.String(128))
+    deployment_version = db.Column(db.String(128))
+    configurations = db.relationship("ProductApplicationsConfigurations", backref="applications", lazy='dynamic')
 
     def __repr__(self):
-        return '<%r deploy number is %r>' % (self.name, self.online_version)
+        return "<ProductApplications" \
+               "(name=%s, creator=%s, integration_version=%s, delivery_version=%s, deployment_version=%s)>" % \
+               (self.name, self.creator, self.integration_version, self.delivery_version, self.deployment_version)
 
 
 class ProductApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, nullable=False)
-    group = db.Column(db.String(128))
-    bind_application = db.Column(db.String(128))
+    bind_application = db.Column(db.Integer, db.ForeignKey('product_applications.id'))
+    bind_host = db.Column(db.String(128))
     version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
 
-    def __init__(self, name, group, bind_application, version, creator, modifer, last_modify_time):
-        self.name = name
-        self.group = group
-        self.bind_application = bind_application
-        self.version = version
-        self.creator = creator
-        self.modifer = modifer
-        self.last_modify_time = last_modify_time
+    def __repr__(self):
+        return "<ProductApplicationsConfigurations" \
+               "(name=%s, bind_application=%s, bind_host=%s, version=%s,creator=%s)>" % \
+               (self.name, self.bind_application, self.bind_host, self.version, self.creator)
 
 
 class SystemApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    bind_host = db.Column(db.String(128))
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
+    configurations = db.relationship("SystemApplicationsConfigurations", backref="applications", lazy='dynamic')
 
-    def __init__(self, name, bind_host, creator, modifer, last_modify_time):
-        self.name = name
-        self.bind_host = bind_host
-        self.creator = creator
-        self.modifer = modifer
-        self.last_modify_time = last_modify_time
+    def __repr__(self):
+        return "<SystemApplications(name=%s, creator=%s)>" % (self.name, self.creator)
 
 
 class SystemApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True, nullable=False)
-    group = db.Column(db.String(128))
-    bind_application = db.Column(db.String(128))
+    bind_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
+    bind_host = db.Column(db.String(128))
     version = db.Column(db.String(128), nullable=False)
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
 
-    def __init__(self, name, group, bind_application, version, creator, modifer, last_modify_time):
-        self.name = name
-        self.group = group
-        self.bind_application = bind_application
-        self.version = version
-        self.creator = creator
-        self.modifer = modifer
-        self.last_modify_time = last_modify_time
+    def __repr__(self):
+        return "<SystemApplicationsConfigurations" \
+               "(name=%s, bind_application=%s, bind_host=%s, version=%s, creator=%s)>" % \
+               (self.name, self.bind_application, self.bind_host, self.version, self.creator)
