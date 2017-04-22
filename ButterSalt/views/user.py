@@ -1,15 +1,16 @@
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField
 from wtforms.validators import InputRequired
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from ButterSalt import app
+from ButterSalt import app, models
 import os
 
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
+login_manager.session_protection = 'basic'
 login_manager.init_app(app)
 
 
@@ -32,6 +33,7 @@ class User(UserMixin):
 class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[InputRequired('用户名是必须的')])
     password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
+    remember_me = BooleanField('保持登陆')
     submit = SubmitField('提交')
 
 user = Blueprint('user', __name__, url_prefix='/user')
@@ -42,13 +44,14 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
-        if username:
-            me = User(username)
-            login_user(me)
-            session['logins'] = True
+        password = form.password.data
+        me = models.Users.query.filter_by(username=username).one_or_none()
+        if me is not None and me.verify_password(password):
+            login_user(User(me), form.remember_me.data)
             session['username'] = username
             flash('Logged in successfully.')
-        return redirect(request.args.get('next') or url_for('home.index'))
+            return redirect(request.args.get('next') or url_for('home.index'))
+        flash('Invalid usename or password.')
     return render_template('user/login.html', form=form)
 
 
@@ -57,6 +60,7 @@ def login():
 def logout():
     logout_user()
     session['logins'] = False
+    flash('You have been logged out.')
     return redirect(url_for('home.index'))
 
 
