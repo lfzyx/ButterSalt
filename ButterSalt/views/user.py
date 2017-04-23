@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
-from wtforms.validators import InputRequired
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from ButterSalt import app, models
+from ButterSalt import app, models, db
 import os
 
 login_manager = LoginManager()
@@ -31,16 +31,39 @@ class User(UserMixin):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('用户名', validators=[InputRequired('用户名是必须的')])
+    username = StringField('用户名', validators=[InputRequired('用户名是必须的'), Length(1, 64),
+                                              Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                                     '用户名只能包含字母，数字，点或下划线')])
     password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
     remember_me = BooleanField('保持登陆')
     submit = SubmitField('提交')
+
+
+class RegistrationForm(FlaskForm):
+    username = StringField('用户名', validators=[InputRequired('用户名是必须的'), Length(1, 64),
+                                              Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                                     '用户名只能包含字母，数字，点或下划线')])
+    email = StringField('Email', validators=[InputRequired('Email是必须的'), Length(1, 64), Email()])
+    password = PasswordField('密码', validators=[InputRequired('密码是必须的'),
+                                               EqualTo('password2', message='密码必须相同.')])
+    password2 = PasswordField('验证密码', validators=[InputRequired('验证密码是必须的')])
+    submit = SubmitField('注册')
+
+    def validate_email(self, field):
+        if models.Users.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
+
+    def validate_username(self, field):
+        if models.Users.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already in use.')
 
 user = Blueprint('user', __name__, url_prefix='/user')
 
 
 @user.route('/login', methods=['GET', 'POST'])
 def login():
+    if not models.Users.query.all():
+        return redirect(url_for('user.register', next=request.args.get('next')))
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
@@ -59,9 +82,21 @@ def login():
 @login_required
 def logout():
     logout_user()
-    session['logins'] = False
     flash('You have been logged out.')
     return redirect(url_for('home.index'))
+
+
+@user.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        me = models.Users(email=form.email.data, username=form.username.data)
+        me.password_hash(form.password.data)
+        db.session.add(me)
+        db.session.commit()
+        flash('Register in successfully.')
+        return redirect(request.args.get('next') or url_for('home.index'))
+    return render_template('user/register.html', form=form)
 
 
 @user.route('/avatar/', methods=['GET', 'POST'])
