@@ -41,7 +41,7 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if session.logins %}
+                {% if current_user.is_authenticated %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.username }} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
