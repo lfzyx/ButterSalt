@@ -5,8 +5,9 @@ from wtforms.validators import InputRequired
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from ButterSalt import app
+from ButterSalt import app, models
 import os
+import hashlib
 
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
@@ -42,9 +43,10 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
-        if username:
-            me = User(username)
-            login_user(me)
+        password = form.password.data
+        if hashlib.sha256(password.encode()).hexdigest() == \
+                models.Users.query.filter(models.Users.username == username).one_or_none().password:
+            login_user(User(username))
             session['logins'] = True
             session['username'] = username
             flash('Logged in successfully.')
