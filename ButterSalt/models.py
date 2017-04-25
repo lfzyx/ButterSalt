@@ -1,6 +1,5 @@
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 
 
 class HostManagement(db.Model):
@@ -65,7 +64,7 @@ class SaltExecuteHistory(db.Model):
     fun = db.Column(db.String(128), nullable=False)
     args = db.Column(db.String(128))
     kwargs = db.Column(db.String(128))
-    user = db.Column(db.String(128), nullable=False)
+    user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
         return "<SaltExecuteHistory" \
@@ -76,8 +75,8 @@ class SaltExecuteHistory(db.Model):
 class ProductApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    creator = db.Column(db.String(128), nullable=False)
-    modifer = db.Column(db.String(128))
+    creator = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
     integration_version = db.Column(db.String(128))
     delivery_version = db.Column(db.String(128))
@@ -92,12 +91,12 @@ class ProductApplications(db.Model):
 
 class ProductApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     bind_application = db.Column(db.Integer, db.ForeignKey('product_applications.id'))
     bind_host = db.Column(db.String(128))
     version = db.Column(db.String(128), nullable=False)
-    creator = db.Column(db.String(128), nullable=False)
-    modifer = db.Column(db.String(128))
+    creator = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
 
     def __repr__(self):
@@ -109,8 +108,8 @@ class ProductApplicationsConfigurations(db.Model):
 class SystemApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    creator = db.Column(db.String(128), nullable=False)
-    modifer = db.Column(db.String(128))
+    creator = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
     configurations = db.relationship("SystemApplicationsConfigurations", backref="applications", lazy='dynamic')
 
@@ -120,12 +119,12 @@ class SystemApplications(db.Model):
 
 class SystemApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, nullable=False)
-    bind_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
+    name = db.Column(db.String(128), nullable=False)
     bind_host = db.Column(db.String(128))
+    bind_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
     version = db.Column(db.String(128), nullable=False)
-    creator = db.Column(db.String(128), nullable=False)
-    modifer = db.Column(db.String(128))
+    creator = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
 
     def __repr__(self):

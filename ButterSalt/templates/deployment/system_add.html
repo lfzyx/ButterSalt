@@ -15,17 +15,6 @@
     </div>
     {% endif %}
 
-    {% if form.bind_host.errors %}
-    <div class="form-group has-error ">
-        {{ form.bind_host.label(class="control-label") }}{{ form.bind_host(class="form-control", placeholder="Optional") }}
-        <p class="help-block">{% for error in form.bind_host.errors %}{{ error }}{% endfor %}</p>
-    </div>
-    {% else %}
-    <div class="form-group " >
-        {{ form.bind_host.label(class="control-label") }}{{ form.bind_host(class="form-control", placeholder="Optional") }}
-    </div>
-    {% endif %}
-
     <div style="display: block">
         {{ form.submit(class="btn btn-default") }}
     </div>

@@ -3,37 +3,21 @@
 {% block page_content %}
 
 <div class="row">
-    <div class="col-sm-2">
-        <ul id="main-nav" class="nav">
-            <div class="panel-heading panel">
-                <li>
-                    <a href="{{ url_for('deployment.system') }}">
-                        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 应用列表
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('deployment.system') }}deployconfig">
-                        <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> 配置列表
-                    </a>
-                </li>
-            </div>
-        </ul>
-    </div>
     <div class="col-sm-10">
         {% block deployment_content %}
-        <a class="btn btn-default" href="add" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加</a>
+        <a class="btn btn-default" href="add" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加应用</a>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th>名称</th>
-                <th>绑定主机</th>
+                <th>绑定环境</th>
             </tr>
             </thead>
             <tbody>
             {% for n in list %}
             <tr>
                 <td> <a href="{{ n['name'] }}">{{ n['name'] }}</a> </td>
-                <td> {{n['bind_host']}} </td>
+                <td> {{n['bind_configurations']}} </td>
             </tr>
             {% endfor %}
             </tbody>

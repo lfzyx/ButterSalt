@@ -233,3 +233,29 @@ class SaltApi(SaltApiBase):
     def get_accepted_keys(self):
         return json.dumps(self.get_keys()['minions'])
 
+    def read_pillar_file(self, path):
+        try:
+            self.login()
+        except LoginError:
+            return False
+        else:
+            responseinfo = self.Token.post(self.address + '/', json={
+                'client': "wheel",
+                'fun': "pillar_roots.read",
+                'path': path,
+            })
+            return responseinfo.json()['return'][0]['data']
+
+    def write_pillar_file(self, data, path):
+        try:
+            self.login()
+        except LoginError:
+            return False
+        else:
+            responseinfo = self.Token.post(self.address + '/', json={
+                'client': "wheel",
+                'fun': "pillar_roots.write",
+                'data': data,
+                'path': path,
+            })
+            return responseinfo.json()['return'][0]['data']
