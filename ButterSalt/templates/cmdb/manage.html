@@ -58,19 +58,11 @@
             {{ form.salt_states(value="jre") }} jre
         </label>
         <label class="checkbox">
-            {{ form.salt_states(value="nginx") }} nginx
-        </label>
-        <label class="checkbox">
             {{ form.salt_states(value="python") }} python
         </label>
         <label class="checkbox">
             {{ form.salt_states(value="redis") }} redis
         </label>
-        <label class="checkbox">
-            {{ form.salt_states(value="tomcat") }} tomcat
-        </label>
-        {{ form.salt_states_nfs.label }}
-        {{ form.salt_states_nfs }}
     </div>
     <div style="display: block">
         {{ form.submit(class="btn btn-default") }}

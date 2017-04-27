@@ -45,7 +45,7 @@ def index():
             kw = n.split('=')
             d[kw[0]] = kw[1]
         jid = salt.execution_command_minions(tgt=tgt, fun=fun, args=arg, kwargs=d)
-        execute = models.SaltExecuteHistory(tgt, fun, str(arg), str(d), 1)
+        execute = models.SaltExecuteHistory(tgt=tgt, fun=fun, args=str(arg), kwargs=str(d), user=1)
         db.session.add(execute)
         db.session.commit()
         flash('执行完成')
