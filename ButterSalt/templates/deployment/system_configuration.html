@@ -1,6 +1,6 @@
 {% extends "deployment/system.html" %}
 {% block deployment_content %}
-    <a class="btn btn-default" href="add" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加配置</a>
+    <a class="btn btn-default" href="add" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 绑定</a>
         <table class="table table-hover">
             <thead>
             <tr>
@@ -12,13 +12,14 @@
             <tbody>
             {% for n in list %}
             <tr>
-                <td> {{n['bind_host']}} </td>
-                <td> <a href="{{ n['name'] }}">{{ n['name'] }}</a> </td>
+                <td> <a href="{{url_for('cmdb.manage',mid=n['bind_host']) }}">{{n['bind_host']}}</a> </td>
+                <td> {{ n['pillar'] }}</a> </td>
                 <td> {{n['last_modify_time']}} </td>
                 <td>
                     <form action method="post">
                         <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
                         <button type="submit"  name="apply" value="{{n['id']}}" >应用</button>
+                        <button type="submit"  name="modify" value="{{n['id']}}" >修改</button>
                         <button type="submit"  name="delete" value="{{n['id']}}" >删除</button>
                     </form>
                 </td>

@@ -4,26 +4,31 @@
 
 <form action="" method="post"  class="form" role="form">
     {{ form.hidden_tag() }}
-    {% if form.configuration_name.errors %}
-    <div class="form-group has-error required" >
-        {{ form.configuration_name.label(class="control-label") }} {{ form.configuration_name(class="form-control", placeholder="required") }}
-        <p class="help-block">{% for error in form.configuration_name.errors %}{{ error }}{% endfor %}</p>
-    </div>
-    {% else %}
-    <div class="form-group required" >
-        {{ form.configuration_name.label(class="control-label") }} {{ form.configuration_name(class="form-control", placeholder="required") }}
-    </div>
-    {% endif %}
     {% if form.bind_host.errors %}
     <div class="form-group has-error required" >
-        {{ form.bind_host.label(class="control-label") }} {{ form.bind_host(class="form-control", placeholder="required") }}
+        {{ form.bind_host.label(class="control-label") }}
+        <input class="form-control"  name="bind_host" type="text" value="" placeholder="Required"
+               autocomplete="off" data-provide="typeahead" data-source='{{ tgt_list }}' >
         <p class="help-block">{% for error in form.bind_host.errors %}{{ error }}{% endfor %}</p>
     </div>
     {% else %}
     <div class="form-group required" >
-        {{ form.bind_host.label(class="control-label") }} {{ form.bind_host(class="form-control", placeholder="required") }}
+        {{ form.bind_host.label(class="control-label") }}
+        <input class="form-control"  name="bind_host" type="text" value="" placeholder="Required"
+               autocomplete="off" data-provide="typeahead" data-source='{{ tgt_list }}' >
     </div>
     {% endif %}
+    {% if form.pillar.errors %}
+    <div class="form-group has-error required" >
+        {{ form.pillar.label(class="control-label") }} {{ form.pillar(class="form-control", rows="25", placeholder="required") }}
+        <p class="help-block">{% for error in form.pillar.errors %}{{ error }}{% endfor %}</p>
+    </div>
+    {% else %}
+    <div class="form-group required" >
+        {{ form.pillar.label(class="control-label") }} {{ form.pillar(class="form-control", rows="25", placeholder="required") }}
+    </div>
+    {% endif %}
+
 
     <div style="display: block">
         {{ form.submit(class="btn btn-default") }}

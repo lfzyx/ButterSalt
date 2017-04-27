@@ -9,7 +9,7 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>名称</th>
+                <th>应用模板</th>
                 <th>绑定环境</th>
             </tr>
             </thead>
@@ -18,6 +18,12 @@
             <tr>
                 <td> <a href="{{ n['name'] }}">{{ n['name'] }}</a> </td>
                 <td> {{n['bind_configurations']}} </td>
+                <td>
+                    <form action method="post">
+                        <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                        <button type="submit"  name="delete" value="{{n['id']}}" >删除</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>

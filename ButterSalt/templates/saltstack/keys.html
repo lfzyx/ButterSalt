@@ -17,7 +17,7 @@
     <td> <a href="{{ n }}" >{{ n }}</a></td>
     <td>
         <form action method="post">
-            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+            <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
             <button type="submit"  name="delete" value="{{ n }}">删除</button>
         </form>
     </td>
@@ -25,7 +25,7 @@
     <td>{{ n }}</td>
     <td>
         <form action method="post">
-            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+            <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
             <button type="submit"  name="accept" value="{{ n }}" >添加</button>
         </form>
     </td>

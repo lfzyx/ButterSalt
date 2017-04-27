@@ -119,10 +119,10 @@ class SystemApplications(db.Model):
 
 class SystemApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
     bind_host = db.Column(db.String(128))
     bind_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
     version = db.Column(db.String(128), nullable=False)
+    pillar = db.Column(db.String(128))
     creator = db.Column(db.Integer, db.ForeignKey('users.id'))
     modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
