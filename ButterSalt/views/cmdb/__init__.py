@@ -40,20 +40,6 @@ def index():
 @cmdb.route('/manage/<mid>', methods=['GET', 'POST'])
 @login_required
 def manage(mid=None):
-    form = StateForm()
-    if form.salt_states.raw_data or form.salt_states_nfs.data != 'None':
-        if form.salt_states_nfs.data != 'None':
-            __list = form.salt_states.raw_data.copy()
-            __list.append(form.salt_states_nfs.data)
-        else:
-            __list = form.salt_states.raw_data.copy()
-
-        __list = (','.join(__list))
-        jid = salt.execution_command_minions(tgt=mid, fun='state.apply', args=[__list])
-
-        flash('执行完成')
-        return redirect(url_for('saltstack.jobs', jid=jid))
     mid_grains = Mid(mid)
     return render_template('cmdb/manage.html', uptime=mid_grains.get_uptime()[mid],
-                           grains=mid_grains.get_grains()[mid],
-                           form=form)
+                           grains=mid_grains.get_grains()[mid])

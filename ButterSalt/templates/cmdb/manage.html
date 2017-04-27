@@ -43,30 +43,4 @@
     </tbody>
 </table>
 
-<p>环境初始化</p>
-
-
-
-<form action="" method="post"  class="form" role="form">
-    {{ form.hidden_tag() }}
-    <div class="checkbox">
-        选择模板:
-        <label class="checkbox" >
-            {{ form.salt_states(value="basetool") }} basetool
-        </label>
-        <label class="checkbox">
-            {{ form.salt_states(value="jre") }} jre
-        </label>
-        <label class="checkbox">
-            {{ form.salt_states(value="python") }} python
-        </label>
-        <label class="checkbox">
-            {{ form.salt_states(value="redis") }} redis
-        </label>
-    </div>
-    <div style="display: block">
-        {{ form.submit(class="btn btn-default") }}
-    </div>
-</form>
-
 {% endblock page_content %}
