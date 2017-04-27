@@ -4,7 +4,7 @@ ButterSalt is a GUI Devops tool based on the SaltStack [netapi.rest_cherrypy](ht
 
 ButterSalt uses the [flask](http://flask.pocoo.org) web framework
 
-![Image of saltpad](https://cloud.githubusercontent.com/assets/1881869/23249737/c9b55392-f9e0-11e6-8ff7-0f84bf19cb15.png)
+![Image of saltpad](https://cloud.githubusercontent.com/assets/1881869/25473240/3f825e4c-2b61-11e7-9a48-63f52dcea1e3.png)
 
 A full-access access for user lfzyx need to add the following configuration items to the /etc/salt/master configuration file：:
 
