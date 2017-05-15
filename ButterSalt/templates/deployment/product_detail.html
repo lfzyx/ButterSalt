@@ -1,0 +1,48 @@
+{% extends "deployment/product.html" %}
+
+{% block deployment_content %}
+<span class="label label-primary">生产环境</span>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>主机</th>
+        <th>部署版本</th>
+        <th>配置</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for n in list %}
+    {% if n.role == 'production' %}
+    <tr>
+        <td> {{ n['bind_host'] }} </td>
+        <td> {{ n['delivery_version'] }} </td>
+        <td> null </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+<span class="label label-info">测试环境</span>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>主机</th>
+        <th>部署版本</th>
+        <th>配置</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for n in list %}
+    {% if n.role == 'test' %}
+    <tr>
+        <td> {{ n['bind_host'] }} </td>
+        <td> {{ n['delivery_version'] }} </td>
+        <td> null </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock deployment_content %}

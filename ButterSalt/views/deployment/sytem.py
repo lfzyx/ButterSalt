@@ -17,7 +17,7 @@ class FormSystemApplication(FlaskForm):
 
 
 class FormSystemApplicationConfiguration(FlaskForm):
-    pillar = TextAreaField('配置')
+    pillar = TextAreaField('配置名称')
     bind_host = StringField('绑定主机', validators=[InputRequired('主机名是必填的')])
     submit = SubmitField('保存')
 

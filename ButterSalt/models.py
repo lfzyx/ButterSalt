@@ -5,16 +5,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class HostManagement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    bind_product_application = db.Column(db.Integer, db.ForeignKey('product_applications.id'))
-    bind_system_application = db.Column(db.Integer, db.ForeignKey('system_applications.id'))
+    role = db.Column(db.String(128))
     creator = db.Column(db.String(128), nullable=False)
     modifer = db.Column(db.String(128))
     last_modify_time = db.Column(db.String(128))
+    applicationhost = db.relationship("ProductApplications", backref="applicationhost", lazy='dynamic')
 
     def __repr__(self):
-        return "<HostManagement" \
-               "(name=%s, bind_product_application=%s, bind_system_application=%s, creator=%s)>" % \
-               (self.name, self.bind_product_application, self.bind_system_application, self.creator)
+        return "<HostManagement(name=%s, role=%s)>" % \
+               (self.name, self.role)
 
 
 class Users(db.Model):
@@ -75,34 +74,30 @@ class SaltExecuteHistory(db.Model):
 class ProductApplications(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
+    bind_host = db.Column(db.Integer, db.ForeignKey('host_management.id'))
+    delivery_version = db.Column(db.String(128))
     creator = db.Column(db.Integer, db.ForeignKey('users.id'))
     modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
-    integration_version = db.Column(db.String(128))
-    delivery_version = db.Column(db.String(128))
-    deployment_version = db.Column(db.String(128))
-    configurations = db.relationship("ProductApplicationsConfigurations", backref="applications", lazy='dynamic')
+    configurations = db.relationship("ProductApplicationsConfigurations", backref="productapplication", lazy='dynamic')
 
     def __repr__(self):
-        return "<ProductApplications" \
-               "(name=%s, creator=%s, integration_version=%s, delivery_version=%s, deployment_version=%s)>" % \
-               (self.name, self.creator, self.integration_version, self.delivery_version, self.deployment_version)
+        return "<ProductApplications(name=%s, bind_host=%s, delivery_version=%s)>" % \
+               (self.name, self.bind_host, self.delivery_version)
 
 
 class ProductApplicationsConfigurations(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
     bind_application = db.Column(db.Integer, db.ForeignKey('product_applications.id'))
-    bind_host = db.Column(db.String(128))
-    version = db.Column(db.String(128), nullable=False)
+    file = db.Column(db.String(128))
+    content = db.Column(db.String(1024))
     creator = db.Column(db.Integer, db.ForeignKey('users.id'))
     modifer = db.Column(db.Integer, db.ForeignKey('users.id'))
     last_modify_time = db.Column(db.String(128))
 
     def __repr__(self):
-        return "<ProductApplicationsConfigurations" \
-               "(name=%s, bind_application=%s, bind_host=%s, version=%s,creator=%s)>" % \
-               (self.name, self.bind_application, self.bind_host, self.version, self.creator)
+        return "<ProductApplicationsConfigurations(bind_application=%s, file=%s, content=%s)>" % \
+               (self.bind_application, self.file, self.content)
 
 
 class SystemApplications(db.Model):
@@ -114,7 +109,7 @@ class SystemApplications(db.Model):
     configurations = db.relationship("SystemApplicationsConfigurations", backref="applications", lazy='dynamic')
 
     def __repr__(self):
-        return "<SystemApplications(name=%s, creator=%s)>" % (self.name, self.creator)
+        return "<SystemApplications(name=%s)>" % (self.name,)
 
 
 class SystemApplicationsConfigurations(db.Model):
@@ -128,6 +123,5 @@ class SystemApplicationsConfigurations(db.Model):
     last_modify_time = db.Column(db.String(128))
 
     def __repr__(self):
-        return "<SystemApplicationsConfigurations" \
-               "(name=%s, bind_application=%s, bind_host=%s, version=%s, creator=%s)>" % \
-               (self.name, self.bind_application, self.bind_host, self.version, self.creator)
+        return "<SystemApplicationsConfigurations(bind_application=%s, bind_host=%s, version=%s)>" % \
+               (self.bind_application, self.bind_host, self.version)

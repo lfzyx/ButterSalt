@@ -4,29 +4,16 @@ from flask import render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired
-import jenkins
-from ButterSalt import J_server, db
-from ButterSalt import models
+from ButterSalt import J_server
+from ButterSalt.models import ProductApplications, ProductApplicationsConfigurations
 from pathlib import Path
 import re
 from . import deployment
 
 
-class FormSystemApplication(FlaskForm):
-    name = StringField('应用名称', validators=[InputRequired('名称是必填的')])
-    submit = SubmitField('保存')
-
-
 class FormSystemApplicationConfiguration(FlaskForm):
     configuration_name = StringField('配置名称', validators=[InputRequired('名称是必填的')])
     bind_host = StringField('绑定主机', validators=[InputRequired('名称是必填的')])
-    submit = SubmitField('保存')
-
-
-class FormProductApplications(FlaskForm):
-    name = StringField('应用名称', validators=[InputRequired('名称是必填的')])
-    bind_host = StringField('绑定主机')
-    bind_configuration_group = StringField('绑定配置')
     submit = SubmitField('保存')
 
 
@@ -38,32 +25,26 @@ class TextEdit(FlaskForm):
 @deployment.route('/product/', methods=['GET', 'POST'])
 @login_required
 def product():
-    jobs = dict()
-    for n in models.ProductApplications.query.all():
+    listdata = list()
+    for application in J_server.get_jobs():
         try:
-            jobs[n.name] = J_server.get_job_info(n.name)['lastSuccessfulBuild']['number']
-        except jenkins.NotFoundException as err:
-            print('jenkins exception: {0}'.format(err))
-    return render_template('deployment/product.html', jobs=jobs)
+            listdata.append({'name': application.get('name'),
+                             'lastSuccessfulBuild': J_server.get_job_info(application.get('name'))['lastSuccessfulBuild']['number'],
+                             'host': ProductApplications.query.filter_by(name=application.get('name')).count()
+                             })
+        except TypeError:
+            listdata.append({'name': None, 'lastSuccessfulBuild': None, 'host': None})
+    return render_template('deployment/product.html', list=listdata)
 
 
-@deployment.route('/product/add', methods=['GET', 'POST'])
+@deployment.route('/product/<name>/', methods=['GET', 'POST'])
 @login_required
-def product_add():
-    jobs = J_server.get_jobs()
-    l = list()
-    for n in jobs:
-        l.append(tuple([n['name'], n['fullname']]))
-    form = FormProductApplications()
-    form.name.choices = l
-    if form.validate_on_submit():
-        name = form.name.data
-        execute = models.ProductApplications(name, 1, 'env', 'lfzyx', None, '2017')
-        db.session.add(execute)
-        db.session.commit()
-        flash('添加成功')
-        return redirect(url_for('deployment.product'))
-    return render_template('deployment/product_add.html', form=form)
+def product_name(name=None):
+    listdata = list()
+    for application in ProductApplications.query.filter_by(name=name).all():
+        listdata.append({'name': application.name, 'bind_host': application.applicationhost.name,
+                         'delivery_version': application.delivery_version, 'role': application.applicationhost.role})
+    return render_template('deployment/product_detail.html', list=listdata)
 
 
 @deployment.route('/product/deployconfig/',  methods=['GET', 'POST'])
@@ -93,4 +74,3 @@ def product_deployconfig(files=None, file=None):
         return render_template('deployment/product_deployconfig_files.html', files=_files)
 
     return render_template('deployment/product_deployconfig.html', subdirectories=_subdirectories)
-
