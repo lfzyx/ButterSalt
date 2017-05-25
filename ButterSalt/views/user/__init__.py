@@ -7,6 +7,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
 from ButterSalt import app, models, db
 import os
+from ButterSalt.mail import send_email
 
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
@@ -94,6 +95,7 @@ def register():
         me.password_hash(form.password.data)
         db.session.add(me)
         db.session.commit()
+        send_email(me.email, 'Welcome to ButterSalt', 'mail/new_user', user=me)
         flash('Registered Successfully!')
         return redirect(request.args.get('next') or url_for('home.index'))
     return render_template('user/register.html', form=form)

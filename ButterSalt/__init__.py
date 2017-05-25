@@ -5,6 +5,7 @@ from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from ButterSalt.saltapi import SaltApi
+from flask_mail import Mail
 
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 CSRFProtect(app)
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 
 salt = SaltApi(
