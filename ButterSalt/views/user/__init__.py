@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
+from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
-from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
-from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from ButterSalt import app, models, db
 import os
+from ButterSalt import app, models, db
 from ButterSalt.mail import send_email
 
 login_manager = LoginManager()
@@ -40,14 +40,14 @@ class LoginForm(FlaskForm):
     submit = SubmitField('提交')
 
 
-class RegistrationForm(FlaskForm):
+class SignupForm(FlaskForm):
     username = StringField('用户名', validators=[InputRequired('用户名是必须的'), Length(1, 64),
                                               Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                                                      '用户名只能包含字母，数字，点或下划线')])
     email = StringField('Email', validators=[InputRequired('Email是必须的'), Length(1, 64), Email()])
-    password = PasswordField('密码', validators=[InputRequired('密码是必须的'),
-                                               EqualTo('password2', message='密码必须相同.')])
-    password2 = PasswordField('验证密码', validators=[InputRequired('验证密码是必须的')])
+    password0 = PasswordField('密码', validators=[InputRequired('密码是必须的'),
+                                               EqualTo('password1', message='密码必须相同.')])
+    password1 = PasswordField('验证密码', validators=[InputRequired('验证密码是必须的')])
     submit = SubmitField('注册')
 
     def validate_email(self, field):
@@ -64,7 +64,7 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route('/login', methods=['GET', 'POST'])
 def login():
     if not models.Users.query.all():
-        return redirect(url_for('user.register', next=request.args.get('next')))
+        return redirect(url_for('user.signup', next=request.args.get('next')))
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
@@ -87,18 +87,18 @@ def logout():
     return redirect(url_for('home.index'))
 
 
-@user.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
+@user.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
     if form.validate_on_submit():
         me = models.Users(email=form.email.data, username=form.username.data)
-        me.password_hash(form.password.data)
+        me.password_hash(form.password0.data)
         db.session.add(me)
         db.session.commit()
+        flash('Sign up Successfully!')
         send_email(me.email, 'Welcome to ButterSalt', 'mail/new_user', user=me)
-        flash('Registered Successfully!')
         return redirect(request.args.get('next') or url_for('home.index'))
-    return render_template('user/register.html', form=form)
+    return render_template('user/signup.html', form=form)
 
 
 @user.route('/avatar/', methods=['GET', 'POST'])
