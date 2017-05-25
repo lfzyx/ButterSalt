@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
+from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
-from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
-from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from ButterSalt import app, models, db
 import os
+from ButterSalt import app, models, db
 
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
