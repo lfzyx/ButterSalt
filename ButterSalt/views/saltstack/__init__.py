@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from flask_login import login_required
-from ButterSalt import salt
+from ButterSalt import salt, db
+from ButterSalt.models import HostManagement, Users
 import json
+import datetime
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
@@ -38,6 +40,15 @@ def keys(mid=None):
         if 'delete' in request.form:
             salt.delete_key(request.form.get('delete'))
         elif 'accept' in request.form:
+            execute = HostManagement(
+                name=request.form.get('accept'),
+                role='test',
+                creator=Users.query.filter_by(username=session['username']).one_or_none().id,
+                modifer=None,
+                last_modify_time=datetime.datetime.now()
+            )
+            db.session.add(execute)
+            db.session.commit()
             salt.accept_key(request.form.get('accept'))
         data = salt.get_keys(mid)
     return render_template('saltstack/keys.html', Data=data)

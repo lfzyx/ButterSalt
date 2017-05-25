@@ -31,7 +31,7 @@ rest_cherrypy:
 
 edit the config.py and modify the SALT_API option to you salt api address
 
-`python3 run.py`
+`python3 manage.py runserver --reload --debug`
 
 ## Initializing the database
 
@@ -40,3 +40,10 @@ Open up a Python terminal in our repository root.
 `from ButterSalt import db`
 
 `db.create_all()`
+
+
+## Docker
+
+`docker pull lfzyx/buttersalt:0.0.1`
+
+`docker run -d -p 80:5000 lfzyx/buttersalt:0.0.1`

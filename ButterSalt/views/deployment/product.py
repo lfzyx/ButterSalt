@@ -1,18 +1,18 @@
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, session
 from flask_login import login_required
 from flask import render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired
-from ButterSalt import J_server
-from ButterSalt.models import ProductApplications, ProductApplicationsConfigurations
+from ButterSalt import J_server, db, salt
+from ButterSalt.models import ProductApplications, ProductApplicationsConfigurations, Users, HostManagement
 from pathlib import Path
 import re
 from . import deployment
+import datetime
 
 
-class FormSystemApplicationConfiguration(FlaskForm):
-    configuration_name = StringField('配置名称', validators=[InputRequired('名称是必填的')])
+class FormProductApplication(FlaskForm):
     bind_host = StringField('绑定主机', validators=[InputRequired('名称是必填的')])
     submit = SubmitField('保存')
 
@@ -45,6 +45,27 @@ def product_name(name=None):
         listdata.append({'name': application.name, 'bind_host': application.applicationhost.name,
                          'delivery_version': application.delivery_version, 'role': application.applicationhost.role})
     return render_template('deployment/product_detail.html', list=listdata)
+
+
+@deployment.route('/product/<name>/add', methods=['GET', 'POST'])
+@login_required
+def product_host_add(name=None):
+    form = FormProductApplication()
+    if form.validate_on_submit():
+        bind_host = form.bind_host.data
+        execute = ProductApplications(
+            name=name,
+            bind_host=HostManagement.query.filter_by(name=bind_host).one_or_none().id,
+            creator=Users.query.filter_by(username=session['username']).one_or_none().id,
+            modifer=None,
+            last_modify_time=datetime.datetime.now()
+        )
+        db.session.add(execute)
+        db.session.commit()
+        flash('保存成功')
+        return redirect(url_for('deployment.product_name', name=name))
+    tgt_list = salt.get_accepted_keys()
+    return render_template('deployment/product_add.html', tgt_list=tgt_list, form=form)
 
 
 @deployment.route('/product/deployconfig/',  methods=['GET', 'POST'])
