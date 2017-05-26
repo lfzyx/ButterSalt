@@ -6,7 +6,7 @@ import ButterSalt
 
 class ButterSaltTestCase(unittest.TestCase):
 
-    app = ButterSalt.app.test_client()
+    testapp = ButterSalt.app.test_client()
     ButterSalt.app.config['TESTING'] = True
     ButterSalt.app.config['WTF_CSRF_ENABLED'] = False
     ButterSalt.app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ButterSalt:ButterSalt@192.168.1.73/test'
@@ -20,7 +20,7 @@ class ButterSaltTestCase(unittest.TestCase):
         ButterSalt.db.drop_all()
 
     def signup(self, username, email, password):
-        return self.app.post('/user/signup', data=dict(
+        return self.testapp.post('/user/signup', data=dict(
             username=username,
             email=email,
             password0=password,
@@ -28,18 +28,18 @@ class ButterSaltTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def login(self, username, password):
-        return self.app.post('/user/login', data=dict(
+        return self.testapp.post('/user/login', data=dict(
             username=username,
             password=password,
         ), follow_redirects=True)
 
     def logout(self):
-        return self.app.get('/user/logout', follow_redirects=True)
+        return self.testapp.get('/user/logout', follow_redirects=True)
 
     def test_empty_db(self):
-        rv = self.app.get('/')
+        rv = self.testapp.get('/')
         assert 'Redirecting' in rv.data.decode()
-        rv = self.app.get('/', follow_redirects=True)
+        rv = self.testapp.get('/', follow_redirects=True)
         assert 'Sign up' in rv.data.decode()
 
     def test_login_logout_signup(self):
@@ -58,27 +58,27 @@ class ButterSaltTestCase(unittest.TestCase):
     def test_home(self):
         self.signup('admin', 'admin@admin.com', '123456')
         self.login('admin', '123456')
-        rv = self.app.get('/', follow_redirects=True)
+        rv = self.testapp.get('/', follow_redirects=True)
         assert 'id="tgt" name="tgt" type="text" value="" placeholder="Required"' in rv.data.decode()
 
     def test_salt_jobs(self):
         self.login('admin', '123456')
-        rv = self.app.get('/salt/jobs/', follow_redirects=True)
+        rv = self.testapp.get('/salt/jobs/', follow_redirects=True)
         assert '<table class="table table-striped">' in rv.data.decode()
 
     def test_salt_minions(self):
         self.login('admin', '123456')
-        rv = self.app.get('/salt/minions/', follow_redirects=True)
+        rv = self.testapp.get('/salt/minions/', follow_redirects=True)
         assert '<table class="table table-striped">' in rv.data.decode()
 
     def test_salt_keys(self):
         self.login('admin', '123456')
-        rv = self.app.get('/salt/keys/', follow_redirects=True)
+        rv = self.testapp.get('/salt/keys/', follow_redirects=True)
         assert '<table class="table table-hover">' in rv.data.decode()
 
     def test_salt_stats(self):
         self.login('admin', '123456')
-        rv = self.app.get('/salt/stats/', follow_redirects=True)
+        rv = self.testapp.get('/salt/stats/', follow_redirects=True)
         assert '<table class="table table-striped">' in rv.data.decode()
 
 

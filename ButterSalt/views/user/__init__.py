@@ -7,7 +7,7 @@ from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from werkzeug.utils import secure_filename
 import os
 from ButterSalt import app, models, db
-from ButterSalt.mail import send_email
+
 
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
@@ -76,6 +76,7 @@ def login():
             flash('Logged in successfully.')
             return redirect(request.args.get('next') or url_for('home.index'))
         flash('Invalid usename or password.')
+        app.logger.warning('A warning login attempt (%s)', username)
     return render_template('user/login.html', form=form)
 
 
@@ -96,7 +97,6 @@ def signup():
         db.session.add(me)
         db.session.commit()
         flash('Sign up Successfully!')
-        send_email(me.email, 'Welcome to ButterSalt', 'mail/new_user', user=me)
         return redirect(request.args.get('next') or url_for('home.index'))
     return render_template('user/signup.html', form=form)
 

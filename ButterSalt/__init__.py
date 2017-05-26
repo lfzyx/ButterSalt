@@ -1,11 +1,12 @@
+import logging
+from logging import FileHandler
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
-from ButterSalt.saltapi import SaltApi
 from flask_mail import Mail
-
+from ButterSalt.saltapi import SaltApi
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -22,6 +23,10 @@ salt = SaltApi(
     app.config.get('PASSWORD')
 )
 
+
+file_handler = FileHandler('ButterSalt.log')
+file_handler.setLevel(logging.WARNING)
+app.logger.addHandler(file_handler)
 
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
