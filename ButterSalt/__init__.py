@@ -1,5 +1,5 @@
 import logging
-from logging import FileHandler
+from logging import FileHandler, Formatter
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -26,7 +26,12 @@ salt = SaltApi(
 
 file_handler = FileHandler('ButterSalt.log')
 file_handler.setLevel(logging.WARNING)
+file_handler.setFormatter(Formatter(
+    '%(asctime)s %(levelname)s: %(message)s '
+    '[in %(pathname)s:%(lineno)d]'
+))
 app.logger.addHandler(file_handler)
+
 
 from ButterSalt.views.cmdb import cmdb
 from ButterSalt.views.saltstack import saltstack
