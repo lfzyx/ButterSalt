@@ -1,18 +1,12 @@
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
-from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
+from flask_login import login_user, logout_user, UserMixin, login_required
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from werkzeug.utils import secure_filename
 import os
-from ButterSalt import app, models, db
-
-
-login_manager = LoginManager()
-login_manager.login_view = "user.login"
-login_manager.session_protection = 'basic'
-login_manager.init_app(app)
+from ButterSalt import models, db, login_manager
 
 
 class Avatar(FlaskForm):
@@ -76,7 +70,7 @@ def login():
             flash('Logged in successfully.')
             return redirect(request.args.get('next') or url_for('home.index'))
         flash('Invalid usename or password.')
-        app.logger.warning('A warning login attempt (%s)', username)
+        # app.logger.warning('A warning login attempt (%s)', username)
     return render_template('user/login.html', form=form)
 
 
@@ -108,6 +102,6 @@ def avatar():
     if form.validate_on_submit():
         filename = secure_filename(form.file.data.filename)
         form.file.data.save(os.path.join(
-            app.root_path, 'uploadfile', filename
+            # app.root_path, 'uploadfile', filename
         ))
     return render_template('upload.html', form=form)

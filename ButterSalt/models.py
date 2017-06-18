@@ -1,4 +1,4 @@
-from . import db
+from ButterSalt import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -55,4 +55,3 @@ class SaltExecuteHistory(db.Model):
         return "<SaltExecuteHistory" \
                "(tgt=%s, fun=%s, args=%s, kwargs=%s, user=%s)>" % \
                (self.tgt, self.fun, self.args, self.kwargs, self.user)
-

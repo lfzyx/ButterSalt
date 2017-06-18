@@ -1,27 +1,23 @@
 import logging
 from logging import FileHandler, Formatter
-from flask import Flask, render_template
+from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
-from ButterSalt.saltapi import SaltApi
-
-app = Flask(__name__)
-app.config.from_object('config')
-bootstrap = Bootstrap(app)
-moment = Moment(app)
-CSRFProtect(app)
-db = SQLAlchemy(app)
-mail = Mail(app)
+from flask_login import LoginManager
+from config import config
 
 
-salt = SaltApi(
-    app.config.get('SALT_API'),
-    app.config.get('USERNAME'),
-    app.config.get('PASSWORD')
-)
+bootstrap = Bootstrap()
+moment = Moment()
+CSRFProtect()
+db = SQLAlchemy()
+mail = Mail()
+login_manager = LoginManager()
+login_manager.login_view = "user.login"
+login_manager.session_protection = 'basic'
 
 
 file_handler = FileHandler('ButterSalt.log')
@@ -30,24 +26,30 @@ file_handler.setFormatter(Formatter(
     '%(asctime)s %(levelname)s: %(message)s '
     '[in %(pathname)s:%(lineno)d]'
 ))
-app.logger.addHandler(file_handler)
+# app.logger.addHandler(file_handler)
 
 
-from ButterSalt.views.cmdb import cmdb
-from ButterSalt.views.saltstack import saltstack
-from ButterSalt.views.user import user
-from ButterSalt.views.home import home
-app.register_blueprint(cmdb)
-app.register_blueprint(saltstack)
-app.register_blueprint(user)
-app.register_blueprint(home)
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
+    bootstrap.init_app(app)
+    mail.init_app(app)
+    moment.init_app(app)
+    db.init_app(app)
+    login_manager.init_app(app)
+    CSRFProtect(app=app)
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('404.html'), 404
+    from views.home import home
+    from views.saltstack import saltstack
+    from views.cmdb import cmdb
+    from views.user import user
+    from views.error import error
+    app.register_blueprint(home)
+    app.register_blueprint(saltstack)
+    app.register_blueprint(cmdb)
+    app.register_blueprint(user)
+    app.register_blueprint(error)
 
-
-@app.errorhandler(500)
-def internal_server_error(error):
-    return render_template('500.html'), 500
+    return app
