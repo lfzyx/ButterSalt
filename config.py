@@ -1,13 +1,13 @@
 import os
-SALT_API = 'http://192.168.1.71:8000'
-USERNAME = 'test'
-PASSWORD = 'test'
-SECRET_KEY = b'\xba\x03\xc7\xdd\xa3\x14\x8e\xc9\x07"\x82\xb3\x0fK\xe8u\x19k\xcd\xc3\x00\x1f\xf0a'
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://ButterSalt:ButterSalt@192.168.1.73/ButterSalt'
+SALT_API = os.environ.get('SALT_API')
+USERNAME = os.environ.get('SALT_USERNAME')
+PASSWORD = os.environ.get('SALT_PASSWORD')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
-MAIL_SERVER = 'smtp.163.com'
+MAIL_SERVER = os.environ.get('MAIL_SERVER')
 MAIL_USE_SSL = True
-MAIL_PORT = '465'
+MAIL_PORT = os.environ.get('MAIL_PORT')
 MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 MAIL_SUBJECT_PREFIX = '[ButterSalt] '
