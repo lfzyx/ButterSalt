@@ -1,28 +1,17 @@
+import os
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
-from flask_login import login_user, logout_user, UserMixin, login_required
+from flask_login import login_user, logout_user, login_required
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from werkzeug.utils import secure_filename
-import os
-from ButterSalt import models, db, login_manager
+from ButterSalt import models, db
 
 
 class Avatar(FlaskForm):
     file = FileField('文件名', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
     submit = SubmitField('上传')
-
-
-# 登陆相关函数和类
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
-
-
-class User(UserMixin):
-    def __init__(self, user_id):
-        self.id = user_id
 
 
 class LoginForm(FlaskForm):
@@ -65,7 +54,7 @@ def login():
         password = form.password.data
         me = models.Users.query.filter_by(username=username).one_or_none()
         if me is not None and me.verify_password(password):
-            login_user(User(me), form.remember_me.data)
+            login_user(me, form.remember_me.data)
             session['username'] = username
             flash('Logged in successfully.')
             return redirect(request.args.get('next') or url_for('home.index'))
