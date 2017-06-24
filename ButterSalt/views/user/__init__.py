@@ -55,7 +55,6 @@ def login():
         me = models.Users.query.filter_by(username=username).one_or_none()
         if me is not None and me.verify_password(password):
             login_user(me, form.remember_me.data)
-            session['username'] = username
             flash('Logged in successfully.')
             return redirect(request.args.get('next') or url_for('home.index'))
         flash('Invalid usename or password.')
@@ -75,8 +74,7 @@ def logout():
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        me = models.Users(email=form.email.data, username=form.username.data)
-        me.password_hash(form.password0.data)
+        me = models.Users(email=form.email.data, username=form.username.data, password=form.password0.data)
         db.session.add(me)
         db.session.commit()
         flash('Sign up Successfully!')
