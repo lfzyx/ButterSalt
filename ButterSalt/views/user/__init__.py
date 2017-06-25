@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, render_template, session, flash, redirect, request, url_for
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError

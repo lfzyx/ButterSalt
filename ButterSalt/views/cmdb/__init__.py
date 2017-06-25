@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, BooleanField, SelectField
-from views.saltstack import salt
+from ..saltstack import salt
 
 
 class Mid:

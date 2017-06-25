@@ -41,11 +41,11 @@ def create_app(config_name):
     login_manager.init_app(app)
     CSRFProtect(app=app)
 
-    from views.home import home
-    from views.saltstack import saltstack
-    from views.cmdb import cmdb
-    from views.user import user
-    from views.error import error
+    from .views.home import home
+    from .views.saltstack import saltstack
+    from .views.cmdb import cmdb
+    from .views.user import user
+    from .views.error import error
     app.register_blueprint(home)
     app.register_blueprint(saltstack)
     app.register_blueprint(cmdb)

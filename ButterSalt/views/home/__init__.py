@@ -4,7 +4,7 @@ from wtforms.validators import InputRequired, Optional
 from flask_wtf import FlaskForm
 from flask_login import login_required
 from ButterSalt import models, db
-from views.saltstack import salt
+from ..saltstack import salt
 
 
 class ModulesForm(FlaskForm):
