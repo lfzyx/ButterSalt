@@ -35,12 +35,13 @@ edit the config.py and modify the SALT_API option to you salt api address
 
 ## Initializing the database
 
-Open up a Python terminal in our repository root.
+Open up terminal in our repository root.
 
-`from ButterSalt import db`
+`python manage.py db init`
 
-`db.create_all()`
+`python manage.py db migrate -m "initial migration"`
 
+`python manage.py db upgrade`
 
 ## Docker
 
