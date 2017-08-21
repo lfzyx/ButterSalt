@@ -2,19 +2,22 @@ import os
 
 
 class Config:
-    SALT_API = 'http://127.0.0.1:8000'  # SALT API address
-    USERNAME = 'user'  # SALT API username
-    PASSWORD = 'passwd'  # SALT API password
     SECRET_KEY = 'secretkey'
+
+    SALT_API = 'http://127.0.0.1:8000'  # SALT API address
+    SALT_USERNAME = 'user'  # SALT API username
+    SALT_PASSWORD = 'passwd'  # SALT API password
+
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://username:password@127.0.0.1/ButterSalt'  # database connect info
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+
     MAIL_SERVER = '127.0.0.1'
     MAIL_USE_SSL = True
     MAIL_PORT = '635'
     MAIL_USERNAME = 'username'
     MAIL_PASSWORD = 'password'
     MAIL_SUBJECT_PREFIX = '[ButterSalt] '
-    MAIL_SENDER = 'lfzyx@buttersalt.org'
+    MAIL_SENDER = 'ButterSalt@ButterSalt.org'
 
     @staticmethod
     def init_app(app):

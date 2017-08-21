@@ -13,7 +13,7 @@ from config import config
 
 bootstrap = Bootstrap()
 moment = Moment()
-CSRFProtect()
+csrfprotect = CSRFProtect()
 db = SQLAlchemy()
 mail = Mail()
 salt = SaltApi()
@@ -43,7 +43,7 @@ def create_app(config_name):
     db.init_app(app)
     salt.init_app(app)
     login_manager.init_app(app)
-    CSRFProtect(app=app)
+    csrfprotect.init_app(app)
 
     from ButterSalt.views.home import home
     from ButterSalt.views.saltstack import saltstack
