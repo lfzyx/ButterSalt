@@ -87,7 +87,6 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.before_app_request
 def before_request():
     if current_user.is_authenticated:
-        current_user.ping()
         if not current_user.confirmed \
                 and request.endpoint \
                 and request.endpoint[:5] != 'auth.' \

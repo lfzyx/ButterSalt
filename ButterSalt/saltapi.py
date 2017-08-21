@@ -22,7 +22,10 @@ class SaltApiBase(object):
 
     """
 
-    def __init__(self, baseurl, username, password, eauth='pam'):
+    def __init__(self, app=None, baseurl=None, username=None, password=None, eauth='pam'):
+        if app is not None:
+            self.init_app(app)
+
         """ Instantiation SaltApiBase class.
 
         :param baseurl: salt api address
@@ -35,6 +38,15 @@ class SaltApiBase(object):
         self.password = password
         self.eauth = eauth
         self.Token = requests.Session()
+
+    def __repr__(self):
+        return "[address=%s, username=%s, password=%s, eauth=%s, Token=%s]" % \
+               (self.address, self.username, self.password, self.eauth, self.Token)
+
+    def init_app(self, app):
+        self.address = app.config.get('SALT_API')
+        self.username = app.config.get('SALT_USERNAME')
+        self.password = app.config.get('SALT_PASSWORD')
 
     def login(self):
         """ salt.netapi.rest_cherrypy.app.Login!

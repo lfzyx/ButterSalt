@@ -1,16 +1,9 @@
 from flask import Blueprint, render_template, request, current_app
 from flask_login import login_required
 import json
-from ButterSalt.saltapi import SaltApi
+from ButterSalt import salt
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
-
-
-salt = SaltApi(
-    current_app.config.get('SALT_API'),
-    current_app.config.get('USERNAME'),
-    current_app.config.get('PASSWORD')
-)
 
 
 @saltstack.route('/minions/')

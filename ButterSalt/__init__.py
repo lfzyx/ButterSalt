@@ -7,6 +7,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
+from ButterSalt.saltapi import SaltApi
 from config import config
 
 
@@ -15,18 +16,20 @@ moment = Moment()
 CSRFProtect()
 db = SQLAlchemy()
 mail = Mail()
+salt = SaltApi()
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
 login_manager.session_protection = 'basic'
 
 
 file_handler = FileHandler('ButterSalt.log')
-file_handler.setLevel(logging.WARNING)
+file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(Formatter(
     '%(asctime)s %(levelname)s: %(message)s '
     '[in %(pathname)s:%(lineno)d]'
 ))
-# app.logger.addHandler(file_handler)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
 
 
 def create_app(config_name):
@@ -38,16 +41,21 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
+    salt.init_app(app)
     login_manager.init_app(app)
     CSRFProtect(app=app)
 
-    from .views.home import home
-    from .views.saltstack import saltstack
-    from .views.user import user
-    from .views.error import error
+    from ButterSalt.views.home import home
+    from ButterSalt.views.saltstack import saltstack
+    from ButterSalt.views.user import user
+    from ButterSalt.views.error import error
     app.register_blueprint(home)
     app.register_blueprint(saltstack)
     app.register_blueprint(user)
     app.register_blueprint(error)
+
+    app.logger.addHandler(file_handler)
+    app.logger.addHandler(stream_handler)
+    app.logger.setLevel(logging.INFO)
 
     return app
