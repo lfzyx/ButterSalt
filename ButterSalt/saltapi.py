@@ -50,6 +50,8 @@ class SaltApiBase(object):
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError, requests.exceptions.Timeout,
                 requests.exceptions.TooManyRedirects, requests.exceptions.RequestException) as err:
             raise LoginError('Requests Failed')
+        except TypeError as err:
+            raise LoginError('Requests Failed {}'.format(err))
 
         else:
             if responseinfo.status_code == 200:

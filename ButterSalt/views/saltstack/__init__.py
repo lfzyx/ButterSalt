@@ -1,16 +1,15 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, current_app
 from flask_login import login_required
 import json
-import os
 from ButterSalt.saltapi import SaltApi
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
 
 salt = SaltApi(
-   os.environ.get('SALT_API'),
-   os.environ.get('SALT_USERNAME'),
-   os.environ.get('SALT_PASSWORD')
+    current_app.config.get('SALT_API'),
+    current_app.config.get('USERNAME'),
+    current_app.config.get('PASSWORD')
 )
 
 

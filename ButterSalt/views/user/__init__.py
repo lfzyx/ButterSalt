@@ -7,7 +7,7 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Valid
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from werkzeug.utils import secure_filename
 from ButterSalt import models, db
-from mail import send_email
+from ButterSalt.mail import send_email
 
 
 class Avatar(FlaskForm):
@@ -145,7 +145,7 @@ def signup():
         me = models.Users(email=form.email.data, username=form.username.data, password=form.password0.data)
         db.session.add(me)
         db.session.commit()
-        token = models.Users.generate_confirmation_token()
+        token = me.generate_confirmation_token()
         send_email(me.email, 'Confirm Your Account',
                    'mail/user/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
