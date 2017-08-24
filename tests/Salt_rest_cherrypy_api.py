@@ -1,6 +1,9 @@
 import requests
+from config import config
 
-url = 'http://192.168.1.71:8000'
+url = config['test'].SALT_API
+username = config['test'].SALT_USERNAME
+password = config['test'].SALT_PASSWORD
 
 session = requests.Session()
 
@@ -11,19 +14,16 @@ print(session.get(url + '/').json())
 print(session.get(url + '/login').json())
 
 print(session.post(url + '/login', json={
-    'username': 'test',
-    'password': 'test',
+    'username': username,
+    'password': password,
     'eauth': 'pam',
 }).json())
+
+print(session.post(url + '/hook/').json())
 
 # /MINIONS
 print(session.get(url + '/minions/').json())
 
-print(session.post('http://192.168.1.71:8000/minions', json={
-    'tgt': ['HXtest2', 'HXtest3'],
-    'fun': 'test.ping',
-    'expr_form': 'list',
-}).json())
 
 # /JOBS
 print(session.get(url + '/jobs/').json())
@@ -38,4 +38,4 @@ print(session.post(url, json={
 
 
 # /LOGOUT
-print(session.post('http://192.168.1.71:8000/logout').json())
+print(session.post(url + '/logout').json())
