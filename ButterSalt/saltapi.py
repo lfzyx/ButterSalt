@@ -250,26 +250,35 @@ class SaltApi(SaltApiBase):
     def read_pillar_file(self, path):
         try:
             self.login()
-        except LoginError:
-            return False
+        except LoginError as e:
+            return e
         else:
-            responseinfo = self.Token.post(self.address + '/', json={
-                'client': "wheel",
-                'fun': "pillar_roots.read",
-                'path': path,
-            })
-            return responseinfo.json()['return'][0]['data']
+            responseinfo = self.execution_command_low(client='wheel', fun='pillar_roots.read', args=[path])
+            return responseinfo['data']
 
     def write_pillar_file(self, data, path):
         try:
             self.login()
-        except LoginError:
-            return False
+        except LoginError as e:
+            return e
         else:
-            responseinfo = self.Token.post(self.address + '/', json={
-                'client': "wheel",
-                'fun': "pillar_roots.write",
-                'data': data,
-                'path': path,
-            })
-            return responseinfo.json()['return'][0]['data']
+            responseinfo = self.execution_command_low(client='wheel', fun='pillar_roots.write', args=[data, path])
+            return responseinfo['data']
+
+    def read_state_file(self, path):
+        try:
+            self.login()
+        except LoginError as e:
+            return e
+        else:
+            responseinfo = self.execution_command_low(client='wheel', fun='file_roots.read', args=[path])
+            return responseinfo['data']
+
+    def write_state_file(self, data, path):
+        try:
+            self.login()
+        except LoginError as e:
+            return e
+        else:
+            responseinfo = self.execution_command_low(client='wheel', fun='file_roots.write', args=[data, path])
+            return responseinfo['data']
