@@ -9,7 +9,7 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(128), unique=True, nullable=False)
-    confirmed = db.Column(db.Boolean, default=False)
+    confirmed = db.Column(db.Boolean, default=0)
     email = db.Column(db.String(128), unique=True, nullable=False)
     role = db.Column(db.Integer, db.ForeignKey('user_role.id'))
 
@@ -32,11 +32,11 @@ class Users(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except():
+        except :
             return False
         if data.get('confirm') != self.id:
             return False
-        self.confirmed = True
+        self.confirmed = 1
         db.session.add(self)
         db.session.commit()
         return True

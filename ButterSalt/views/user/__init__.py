@@ -28,7 +28,7 @@ class SignupForm(FlaskForm):
                                                      '用户名只能包含字母，数字，点或下划线')])
     email = StringField('Email', validators=[InputRequired('Email是必须的'), Length(1, 64), Email()])
     password0 = PasswordField('密码', validators=[InputRequired('密码是必须的'),
-                                               EqualTo('password1', message='密码必须相同.')])
+                                                EqualTo('password1', message='密码必须相同.')])
     password1 = PasswordField('验证密码', validators=[InputRequired('验证密码是必须的')])
     submit = SubmitField('注册')
 
