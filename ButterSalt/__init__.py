@@ -58,13 +58,4 @@ def create_app(config_name):
     app.register_blueprint(user)
     app.register_blueprint(error)
 
-    import pip
-    import importlib
-    installed_packages_list = sorted(["%s" % (i.key,)
-                                      for i in pip.get_installed_distributions()])
-    for mod in installed_packages_list:
-        if 'buttersalt-' in mod:
-            plugin_mod = importlib.import_module(mod.replace('-', '_')+'.views')
-            app.register_blueprint(plugin_mod.__blueprint__)
-
     return app

@@ -9,39 +9,88 @@ from ButterSalt.mail import send_email
 
 
 class Avatar(FlaskForm):
-    file = FileField('文件名', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
-    submit = SubmitField('上传')
+    file = FileField('filename', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    submit = SubmitField('upload')
 
 
 class LoginForm(FlaskForm):
-    username = StringField('用户名', validators=[InputRequired('用户名是必须的'), Length(1, 64),
-                                              Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                                     '用户名只能包含字母，数字，点或下划线')])
-    password = PasswordField('密码', validators=[InputRequired('密码是必须的')])
-    remember_me = BooleanField('保持登陆')
-    submit = SubmitField('提交')
+    username = StringField('Username', validators=[InputRequired('Username required'), Length(1, 64),
+                                                   Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                                   'Usernames must have only letters, numbers, dots or underscores')])
+    password = PasswordField('Password', validators=[InputRequired('Password required')])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Log In')
 
 
 class SignupForm(FlaskForm):
-    username = StringField('用户名', validators=[InputRequired('用户名是必须的'), Length(1, 64),
-                                              Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                                     '用户名只能包含字母，数字，点或下划线')])
-    email = StringField('Email', validators=[InputRequired('Email是必须的'), Length(1, 64), Email()])
-    password0 = PasswordField('密码', validators=[InputRequired('密码是必须的'),
-                                                EqualTo('password1', message='密码必须相同.')])
-    password1 = PasswordField('验证密码', validators=[InputRequired('验证密码是必须的')])
-    submit = SubmitField('注册')
+    username = StringField('Username', validators=[InputRequired('Username required'), Length(1, 64),
+                                                   Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                                                   'Usernames must have only letters, numbers, dots or underscores')])
+    email = StringField('Email', validators=[InputRequired('Email required'), Length(1, 64), Email()])
+    password0 = PasswordField('Password', validators=[InputRequired('Password required'),
+                                                      EqualTo('password1', message='Passwords must match.')])
+    password1 = PasswordField('Confirm password', validators=[InputRequired('Password required')])
+    submit = SubmitField('Sign up')
 
+    @staticmethod
     def validate_email(self, field):
         if models.Users.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
+    @staticmethod
     def validate_username(self, field):
         if models.Users.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
 
 
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Old password', validators=[InputRequired('Password required')])
+    password0 = PasswordField('New password', validators=[
+        InputRequired('Password required'), EqualTo('password1', message='Passwords must match')])
+    password1 = PasswordField('Confirm new password', validators=[InputRequired('Password required')])
+    submit = SubmitField('Update Password')
+
+
+class PasswordResetRequestForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired('Email required'), Length(1, 64), Email()])
+    submit = SubmitField('Reset Password')
+
+
+class PasswordResetForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired('Email required'), Length(1, 64), Email()])
+    password0 = PasswordField('New Password', validators=[
+        InputRequired('Password required'), EqualTo('password1', message='Passwords must match')])
+    password1 = PasswordField('Confirm new password', validators=[InputRequired('Password required')])
+    submit = SubmitField('Reset Password')
+
+    @staticmethod
+    def validate_email(self, field):
+        if models.Users.query.filter_by(email=field.data).first() is None:
+            raise ValidationError('Unknown email address.')
+
+
+class ChangeEmailForm(FlaskForm):
+    email = StringField('New Email', validators=[InputRequired('Email required'), Length(1, 64), Email()])
+    password = PasswordField('Password', validators=[InputRequired('Password required')])
+    submit = SubmitField('Update Email Address')
+
+    @staticmethod
+    def validate_email(self, field):
+        if models.Users.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
+
+
 user = Blueprint('user', __name__, url_prefix='/user')
+
+
+@user.before_app_request
+def before_request():
+    if current_user.is_authenticated:
+        if not current_user.confirmed \
+                and request.endpoint \
+                and request.endpoint[:5] != 'user.' \
+                and request.endpoint != 'static':
+            return redirect(url_for('user.unconfirmed'))
 
 
 @user.route('/login', methods=['GET', 'POST'])
@@ -108,18 +157,90 @@ def resend_confirmation():
     return redirect(url_for('home.index'))
 
 
-@user.before_app_request
-def before_request():
-    if current_user.is_authenticated:
-        if not current_user.confirmed \
-                and request.endpoint \
-                and request.endpoint[:5] != 'user.' \
-                and request.endpoint != 'static':
-            return redirect(url_for('user.unconfirmed'))
-
-
 @user.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('home.index'))
     return render_template('user/unconfirmed.html')
+
+
+@user.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password0.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash('Your password has been updated.')
+            return redirect(url_for('home.index'))
+        else:
+            flash('Invalid password.')
+    return render_template("user/change_password.html", form=form)
+
+
+@user.route('/reset', methods=['GET', 'POST'])
+def password_reset_request():
+    if not current_user.is_anonymous:
+        return redirect(url_for('home.index'))
+    form = PasswordResetRequestForm()
+    if form.validate_on_submit():
+        me = models.Users.query.filter_by(email=form.email.data).first()
+        if me:
+            token = me.generate_reset_token()
+            send_email(me.email, 'Reset Your Password',
+                       'mail/user/reset_password',
+                       user=me, token=token,
+                       next=request.args.get('next'))
+        flash('An email with instructions to reset your password has been '
+              'sent to you.')
+        return redirect(url_for('user.login'))
+    return render_template('user/reset_password.html', form=form)
+
+
+@user.route('/reset/<token>', methods=['GET', 'POST'])
+def password_reset(token):
+    if not current_user.is_anonymous:
+        return redirect(url_for('home.index'))
+    form = PasswordResetForm()
+    if form.validate_on_submit():
+        me = models.Users.query.filter_by(email=form.email.data).first()
+        if me is None:
+            return redirect(url_for('home.index'))
+        if me.reset_password(token, form.password0.data):
+            flash('Your password has been updated.')
+            return redirect(url_for('user.login'))
+        else:
+            return redirect(url_for('home.index'))
+    return render_template('user/reset_password.html', form=form)
+
+
+@user.route('/change-email', methods=['GET', 'POST'])
+@login_required
+def change_email_request():
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_email = form.email.data
+            token = current_user.generate_email_change_token(new_email)
+            send_email(new_email, 'Confirm your email address',
+                       'mail/user/change_email',
+                       user=current_user, token=token)
+            flash('An email with instructions to confirm your new email '
+                  'address has been sent to you.')
+            return redirect(url_for('home.index'))
+        else:
+            flash('Invalid password.')
+    return render_template("user/change_email.html", form=form)
+
+
+@user.route('/change-email/<token>')
+@login_required
+def change_email(token):
+    if current_user.change_email(token):
+        flash('Your email address has been updated.')
+    else:
+        flash('Invalid request.')
+    return redirect(url_for('home.index'))
+
