@@ -1,12 +1,13 @@
 import logging
 from logging import FileHandler, Formatter
-from flask import Flask
+from flask import Flask, request
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
+from flask_babel import Babel
 from ButterSalt.saltapi import SaltApi
 from config import config
 
@@ -17,6 +18,7 @@ csrfprotect = CSRFProtect()
 db = SQLAlchemy()
 mail = Mail()
 salt = SaltApi()
+babel = Babel()
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
 login_manager.session_protection = 'basic'
@@ -32,6 +34,15 @@ stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 
 
+@babel.localeselector
+def get_locale():
+    locale = request.accept_languages.best_match(['zh-cn', 'en'])
+    if locale == 'zh-cn':
+        return 'zh'
+    else:
+        return 'en'
+
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -44,6 +55,7 @@ def create_app(config_name):
     salt.init_app(app)
     login_manager.init_app(app)
     csrfprotect.init_app(app)
+    babel.init_app(app)
 
     app.logger.addHandler(file_handler)
     app.logger.addHandler(stream_handler)
