@@ -3,12 +3,12 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Login</h1>
+    <h1>{{gettext('Login')}}</h1>
 </div>
 <div class="col-md-4">
 {{ wtf.quick_form(form) }}
     <br>
-    <p>Forgot your password? <a href="{{ url_for('user.password_reset_request') }}">Click here to reset it</a>.</p>
-    <p>New user? <a href="{{ url_for('user.signup') }}">Click here to register</a>.</p>
+    <p>{{gettext('Forgot your password?')}} <a href="{{ url_for('user.password_reset_request') }}">{{gettext('Click here to reset it')}}</a>.</p>
+    <p>{{gettext('New user?')}} <a href="{{ url_for('user.signup') }}">{{gettext('Click here to register')}}</a>.</p>
 </div>
 {% endblock page_content%}

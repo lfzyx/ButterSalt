@@ -24,3 +24,19 @@ msgstr "修改 Email"
 
 msgid "Logout"
 msgstr "登出"
+
+msgid "Forgot your password?"
+msgstr "忘记密码？"
+
+msgid "Click here to reset it"
+msgstr "点击这里重置"
+
+msgid "New user?"
+msgstr "新用户？"
+
+msgid "Click here to register"
+msgstr "点击这里注册"
+
+msgid "Login"
+msgstr "登陆"
+
