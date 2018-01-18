@@ -124,7 +124,7 @@ def logout():
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        me = models.Users(email=form.email.data, username=form.username.data, password=form.password0.data)
+        me = models.User(email=form.email.data, username=form.username.data, password=form.password0.data)
         db.session.add(me)
         db.session.commit()
         token = me.generate_confirmation_token()
