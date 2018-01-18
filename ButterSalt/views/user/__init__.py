@@ -4,8 +4,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
-from ButterSalt import models, db
-from ButterSalt.mail import send_email
+from ... import models, db
+from ...email import send_email
 
 
 class Avatar(FlaskForm):
