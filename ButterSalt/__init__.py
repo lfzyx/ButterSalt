@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
 from flask_babel import Babel
-from ButterSalt.saltapi import SaltApi
+from buttersalt_saltapi import saltapi
 from config import config
 
 
@@ -17,7 +17,7 @@ moment = Moment()
 csrfprotect = CSRFProtect()
 db = SQLAlchemy()
 mail = Mail()
-salt = SaltApi()
+salt = saltapi.SaltApi()
 babel = Babel()
 login_manager = LoginManager()
 login_manager.login_view = "user.login"
@@ -61,10 +61,10 @@ def create_app(config_name):
     app.logger.addHandler(stream_handler)
     app.logger.setLevel(logging.INFO)
 
-    from ButterSalt.views.home import home
-    from ButterSalt.views.saltstack import saltstack
-    from ButterSalt.views.user import user
-    from ButterSalt.views.error import error
+    from .views.home import home
+    from .views.saltstack import saltstack
+    from .views.user import user
+    from .views.error import error
     app.register_blueprint(home)
     app.register_blueprint(saltstack)
     app.register_blueprint(user)

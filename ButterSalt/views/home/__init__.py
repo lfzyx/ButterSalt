@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 from flask_wtf import FlaskForm
 from flask_login import login_required
-from ButterSalt import models, db, salt
+from ... import models, db, salt
 
 
 class ModulesForm(FlaskForm):

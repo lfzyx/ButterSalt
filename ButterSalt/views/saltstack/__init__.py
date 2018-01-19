@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, current_app
 from flask_login import login_required
 import json
-from ButterSalt import salt
+from ... import salt
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
