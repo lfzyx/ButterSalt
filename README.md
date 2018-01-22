@@ -4,9 +4,7 @@ ButterSalt is a GUI Devops tool based on the SaltStack [netapi.rest_cherrypy](ht
 
 ButterSalt uses the [flask](http://flask.pocoo.org) web framework
 
-![Image of saltpad](https://cloud.githubusercontent.com/assets/1881869/25473240/3f825e4c-2b61-11e7-9a48-63f52dcea1e3.png)
-
-A full-access access for user lfzyx need to add the following configuration items to the /etc/salt/master configuration file：:
+A full-access access for linux user lfzyx need to add the following configuration items to the /etc/salt/master configuration file：:
 
 <pre>
 external_auth:
@@ -31,19 +29,18 @@ rest_cherrypy:
 
 edit the config.py and modify the SALT_API option to you salt api address
 
-`python3 manage.py runserver --reload --debug`
+`python3 manage.py runserver`
 
 ## Initializing the database
 
 Open up terminal in our repository root.
 
-`from ButterSalt import create_app`
+`python manage.py db init`
 
-`app = create_app('development')`
+`python manage.py db migrate`
 
-`with app.app_context():`
+`python manage.py db upgrade`
 
-    `db.create_all()`
 
 ## Docker
 
