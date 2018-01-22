@@ -34,12 +34,12 @@ class SignupForm(FlaskForm):
 
     @staticmethod
     def validate_email(self, field):
-        if models.Users.query.filter_by(email=field.data).first():
+        if models.User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
     @staticmethod
     def validate_username(self, field):
-        if models.Users.query.filter_by(username=field.data).first():
+        if models.User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
 
 
@@ -85,8 +85,8 @@ user = Blueprint('user', __name__, url_prefix='/user')
 
 @user.before_app_request
 def before_request():
-    if current_user.is_authenticated:
-        if not current_user.confirmed \
+    if current_user.is_authenticated \
+                and not current_user.confirmed \
                 and request.endpoint \
                 and request.endpoint[:5] != 'user.' \
                 and request.endpoint != 'static':
@@ -95,13 +95,13 @@ def before_request():
 
 @user.route('/login', methods=['GET', 'POST'])
 def login():
-    if not models.Users.query.all():
+    if not models.User.query.all():
         return redirect(url_for('user.signup', next=request.args.get('next')))
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        me = models.Users.query.filter_by(username=username).one_or_none()
+        me = models.User.query.filter_by(username=username).one_or_none()
         if me is not None and me.verify_password(password):
             login_user(me, form.remember_me.data)
             flash('Logged in successfully.')
@@ -186,7 +186,7 @@ def password_reset_request():
         return redirect(url_for('home.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
-        me = models.Users.query.filter_by(email=form.email.data).first()
+        me = models.User.query.filter_by(email=form.email.data).first()
         if me:
             token = me.generate_reset_token()
             send_email(me.email, 'Reset Your Password',
@@ -205,7 +205,7 @@ def password_reset(token):
         return redirect(url_for('home.index'))
     form = PasswordResetForm()
     if form.validate_on_submit():
-        me = models.Users.query.filter_by(email=form.email.data).first()
+        me = models.User.query.filter_by(email=form.email.data).first()
         if me is None:
             return redirect(url_for('home.index'))
         if me.reset_password(token, form.password0.data):
