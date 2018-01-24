@@ -46,7 +46,7 @@
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{{ url_for('user.login') }}">Login</a></li>
+                <li><a href="{{ url_for('user.login') }}">{{gettext('Login')}}</a></li>
                 {% endif %}
             </ul>
         </div>

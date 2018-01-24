@@ -6,6 +6,7 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Valid
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from ... import models, db
 from ...sendmail import send_email
+from flask_babel import lazy_gettext
 
 
 class Avatar(FlaskForm):
@@ -23,14 +24,14 @@ class LoginForm(FlaskForm):
 
 
 class SignupForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired('Username required'), Length(1, 64),
+    username = StringField(lazy_gettext('Username'), validators=[InputRequired('Username required'), Length(1, 64),
                                                    Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                                                    'Usernames must have only letters, numbers, dots or underscores')])
-    email = StringField('Email', validators=[InputRequired('Email required'), Length(1, 64), Email()])
-    password0 = PasswordField('Password', validators=[InputRequired('Password required'),
+    email = StringField(lazy_gettext('Email'), validators=[InputRequired('Email required'), Length(1, 64), Email()])
+    password0 = PasswordField(lazy_gettext('Password'), validators=[InputRequired('Password required'),
                                                       EqualTo('password1', message='Passwords must match.')])
-    password1 = PasswordField('Confirm password', validators=[InputRequired('Password required')])
-    submit = SubmitField('Sign up')
+    password1 = PasswordField(lazy_gettext('Confirm password'), validators=[InputRequired('Password required')])
+    submit = SubmitField(lazy_gettext('Sign up'))
 
     @staticmethod
     def validate_email(self, field):
