@@ -69,3 +69,9 @@ msgstr "验证密码"
 msgid "Email"
 msgstr "邮箱"
 
+msgid "A confirmation email has been sent to you by email."
+msgstr "一封验证邮件已经发送至你的邮箱。"
+
+msgid "A new confirmation email has been sent to you by email."
+msgstr "一封新的验证邮件已经发送至你的邮箱。"
+

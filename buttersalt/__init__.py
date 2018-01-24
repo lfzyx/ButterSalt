@@ -10,6 +10,7 @@ from flask_login import LoginManager
 from flask_babel import Babel
 from buttersalt_saltapi import saltapi
 from config import config
+from flask_babel import gettext
 
 
 bootstrap = Bootstrap()

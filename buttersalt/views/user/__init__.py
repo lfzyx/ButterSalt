@@ -6,7 +6,7 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Valid
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 from ... import models, db
 from ...sendmail import send_email
-from flask_babel import lazy_gettext
+from flask_babel import lazy_gettext, gettext
 
 
 class Avatar(FlaskForm):
@@ -15,11 +15,11 @@ class Avatar(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired('Username required'), Length(1, 64),
+    username = StringField(lazy_gettext('Username'), validators=[InputRequired('Username required'), Length(1, 64),
                                                    Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                                                    'Usernames must have only letters, numbers, dots or underscores')])
-    password = PasswordField('Password', validators=[InputRequired('Password required')])
-    remember_me = BooleanField('Remember Me')
+    password = PasswordField(lazy_gettext('Password'), validators=[InputRequired('Password required')])
+    remember_me = BooleanField(lazy_gettext('Remember Me'))
     submit = SubmitField('Log In')
 
 
@@ -105,7 +105,7 @@ def login():
         me = models.User.query.filter_by(username=username).one_or_none()
         if me is not None and me.verify_password(password):
             login_user(me, form.remember_me.data)
-            flash('Logged in successfully.')
+            flash(lazy_gettext('Logged in successfully.'))
             current_app.logger.info('A successful login attempt (%s)', username)
             return redirect(request.args.get('next') or url_for('home.index'))
         flash('Invalid usename or password.')
@@ -131,7 +131,7 @@ def signup():
         token = me.generate_confirmation_token()
         send_email(me.email, 'Confirm Your Account',
                    'mail/user/confirm', user=user, token=token)
-        flash('A confirmation email has been sent to you by email.')
+        flash(lazy_gettext('A confirmation email has been sent to you by email.'))
         return redirect(request.args.get('next') or url_for('home.index'))
     return render_template('user/signup.html', form=form)
 
@@ -154,7 +154,7 @@ def resend_confirmation():
     token = current_user.generate_confirmation_token()
     send_email(current_user.email, 'Confirm Your Account',
                'mail/user/confirm', user=current_user, token=token)
-    flash('A new confirmation email has been sent to you by email.')
+    flash(lazy_gettext('A new confirmation email has been sent to you by email.'))
     return redirect(url_for('home.index'))
 
 
