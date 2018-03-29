@@ -10,4 +10,6 @@ install:
 jobs:
   include:
     - stage: test
-      script: python -m unittest
+      script:
+      - mv config.py.simple config.py
+      - python -m unittest
