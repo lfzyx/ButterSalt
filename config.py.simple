@@ -27,6 +27,12 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     TEMPLATES_AUTO_RELOAD = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 class ProductionConfig(Config):
@@ -35,6 +41,7 @@ class ProductionConfig(Config):
 
 config = {
     'development': DevelopmentConfig,
+    'testing': TestingConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
