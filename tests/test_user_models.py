@@ -36,15 +36,15 @@ class UserModelTestCase(unittest.TestCase):
         self.assertTrue(u.password_hash != u2.password_hash)
 
     def test_valid_confirmation_token(self):
-        u = User(password='cat')
+        u = User(username='cat', password='cat', email='cat@gmail.com')
         db.session.add(u)
         db.session.commit()
         token = u.generate_confirmation_token()
         self.assertTrue(u.confirm(token))
 
     def test_invalid_confirmation_token(self):
-        u1 = User(password='cat')
-        u2 = User(password='dog')
+        u1 = User(username='cat', password='cat', email='cat@gmail.com')
+        u2 = User(username='dog', password='dog', email='dog@gmail.com')
         db.session.add(u1)
         db.session.add(u2)
         db.session.commit()
@@ -52,7 +52,7 @@ class UserModelTestCase(unittest.TestCase):
         self.assertFalse(u2.confirm(token))
 
     def test_expired_confirmation_token(self):
-        u = User(password='cat')
+        u = User(username='cat', password='cat', email='cat@gmail.com')
         db.session.add(u)
         db.session.commit()
         token = u.generate_confirmation_token(1)
