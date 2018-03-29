@@ -1,5 +1,7 @@
 # ButterSalt
 
+[![Build Status](https://travis-ci.org/lfzyx/ButterSalt.svg?branch=master)](https://travis-ci.org/lfzyx/ButterSalt)
+
 ButterSalt is a GUI Devops tool based on the SaltStack [netapi.rest_cherrypy](https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html)
 
 ButterSalt uses the [flask](http://flask.pocoo.org) web framework
