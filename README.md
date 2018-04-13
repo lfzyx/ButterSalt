@@ -46,6 +46,10 @@ Open up terminal in our repository root.
 
 ## Docker
 
-`docker pull lfzyx/buttersalt:0.0.1`
+`docker pull lfzyx/buttersalt`
 
-`docker run -d -p 80:5000 lfzyx/buttersalt:0.0.1`
+`docker run --env DATABASE_URL=mysql+pymysql://Mysql-USERNAME:Mysql-PASSWD@URL/DatabaseName:PORT --env SALT_API_URI=http://Pam-USERNAME:Pam-PASSWD@URL:PORT -p 5000:5000 lfzyx/buttersalt`
+
+If this is your first run the image, use the following command first to create DATABASE:
+
+`docker run --env DATABASE_URL=mysql+pymysql://Mysql-USERNAME:Mysql-PASSWD@URL/DatabaseName:PORT --entrypoint "/bin/sh" lfzyx/buttersalt /etc/rc.local`
