@@ -4,12 +4,9 @@ import os
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
 
-    SALT_API = os.environ.get('SALT_API') or 'http://127.0.0.1:8000'  # SALT API address
-    SALT_USERNAME = os.environ.get('SALT_USERNAME') or 'user'  # SALT API username
-    SALT_PASSWORD = os.environ.get('SALT_PASSWORD') or 'passwd'  # SALT API password
+    SALT_API_URI = os.environ.get('SALT_API_URI') or 'http://user:passwd@127.0.0.1:8000'  # SALT API connect info
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://username:password@127.0.0.1/ButterSalt'  # database connect info
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or '127.0.0.1'
     MAIL_USE_SSL = True
@@ -24,14 +21,14 @@ class Config:
         pass
 
 
-class DevelopmentConfig(Config):
-    DEBUG = True
-    TEMPLATES_AUTO_RELOAD = True
+class TestingConfig(Config):
+    TESTING = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
-class TestingConfig(Config):
-    TESTING = True
+class DevelopmentConfig(Config):
+    DEBUG = True
+    TEMPLATES_AUTO_RELOAD = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
@@ -40,8 +37,8 @@ class ProductionConfig(Config):
 
 
 config = {
-    'development': DevelopmentConfig,
     'testing': TestingConfig,
+    'development': DevelopmentConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
