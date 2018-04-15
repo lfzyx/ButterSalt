@@ -1,31 +1,13 @@
-import os
 import unittest
-import tempfile
-import ButterSalt
+import buttersalt
 
 
 class ButterSaltTestCase(unittest.TestCase):
 
-    testapp = ButterSalt.app.test_client()
-    ButterSalt.app.config['TESTING'] = True
-    ButterSalt.app.config['WTF_CSRF_ENABLED'] = False
-    ButterSalt.app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ButterSalt:ButterSalt@192.168.1.73/test'
-
-    @classmethod
-    def setUpClass(cls):
-        ButterSalt.db.create_all()
-
-    @classmethod
-    def tearDownClass(cls):
-        ButterSalt.db.drop_all()
-
-    def signup(self, username, email, password):
-        return self.testapp.post('/user/signup', data=dict(
-            username=username,
-            email=email,
-            password0=password,
-            password1=password,
-        ), follow_redirects=True)
+    testapp = buttersalt.app.test_client()
+    buttersalt.app.config['TESTING'] = True
+    buttersalt.app.config['WTF_CSRF_ENABLED'] = False
+    buttersalt.app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ButterSalt:ButterSalt@192.168.1.73/test'
 
     def login(self, username, password):
         return self.testapp.post('/user/login', data=dict(
@@ -35,12 +17,6 @@ class ButterSaltTestCase(unittest.TestCase):
 
     def logout(self):
         return self.testapp.get('/user/logout', follow_redirects=True)
-
-    def test_empty_db(self):
-        rv = self.testapp.get('/')
-        assert 'Redirecting' in rv.data.decode()
-        rv = self.testapp.get('/', follow_redirects=True)
-        assert 'Sign up' in rv.data.decode()
 
     def test_login_logout_signup(self):
         rv = self.login('admin', '123456')

@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Optional
 from flask_wtf import FlaskForm
 from flask_login import login_required
-from ... import models, db, salt
+from ... import salt
 
 
 class ModulesForm(FlaskForm):
@@ -44,9 +44,6 @@ def index():
             kw = n.split('=')
             d[kw[0]] = kw[1]
         jid = salt.execution_command_minions(tgt=tgt, fun=fun, args=arg, kwargs=d)
-        execute = models.SaltExecuteHistory(tgt=tgt, fun=fun, args=str(arg), kwargs=str(d), user=1)
-        db.session.add(execute)
-        db.session.commit()
         flash('执行完成')
         return redirect(url_for('saltstack.jobs', jid=jid))
     tgt_list = salt.get_accepted_keys()

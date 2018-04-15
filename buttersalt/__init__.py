@@ -4,19 +4,16 @@ from flask import Flask, request
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
-from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
 from flask_babel import Babel
 from buttersalt_saltapi import saltapi
 from config import config
-from flask_babel import gettext
 
 
 bootstrap = Bootstrap()
 moment = Moment()
 csrfprotect = CSRFProtect()
-db = SQLAlchemy()
 mail = Mail()
 salt = saltapi.SaltApi()
 babel = Babel()
@@ -52,7 +49,6 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
-    db.init_app(app)
     salt.init_app(app)
     login_manager.init_app(app)
     csrfprotect.init_app(app)

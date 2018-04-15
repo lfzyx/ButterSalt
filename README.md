@@ -33,23 +33,11 @@ edit the config.py and modify the SALT_API option to you salt api address
 
 `python3 manage.py runserver`
 
-## Initializing the database
-
-Open up terminal in our repository root.
-
-`python manage.py db init`
-
-`python manage.py db migrate`
-
-`python manage.py db upgrade`
-
 
 ## Docker
 
 `docker pull lfzyx/buttersalt`
 
-`docker run --env DATABASE_URL=mysql+pymysql://Mysql-USERNAME:Mysql-PASSWD@URL/DatabaseName:PORT --env SALT_API_URI=http://Pam-USERNAME:Pam-PASSWD@URL:PORT -p 5000:5000 lfzyx/buttersalt`
+`docker run --env DASHBOARD_ADMIN=USERNAME:PASSWD --env SALT_API_URI=http://Pam-USERNAME:Pam-PASSWD@URL:PORT -p 5000:5000 lfzyx/buttersalt`
 
-If this is your first run the image, use the following command first to create DATABASE:
 
-`docker run --env DATABASE_URL=mysql+pymysql://Mysql-USERNAME:Mysql-PASSWD@URL/DatabaseName:PORT --entrypoint "/bin/sh" lfzyx/buttersalt /etc/rc.local`

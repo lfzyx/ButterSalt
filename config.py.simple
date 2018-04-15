@@ -2,6 +2,8 @@ import os
 
 
 class Config:
+    DASHBOARD_ADMIN = os.environ.get('DASHBOARD_ADMIN') or 'admin:admin'
+
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
 
     SALT_API_URI = os.environ.get('SALT_API_URI') or 'http://user:passwd@127.0.0.1:8000'  # SALT API connect info

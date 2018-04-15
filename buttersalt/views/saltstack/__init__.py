@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 import json
 from ... import salt
