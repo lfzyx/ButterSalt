@@ -23,8 +23,13 @@ class ModulesForm(FlaskForm):
 home = Blueprint('home', __name__)
 
 
-@home.route('/', methods=['GET', 'POST'])
+@home.before_request
 @login_required
+def before_request():
+    pass
+
+
+@home.route('/', methods=['GET', 'POST'])
 def index():
     """ Generate ModulesForm, provide autocomplete required data-source.
 
@@ -46,5 +51,6 @@ def index():
         jid = salt.execution_command_minions(tgt=tgt, fun=fun, args=arg, kwargs=d)
         flash('执行完成')
         return redirect(url_for('saltstack.jobs', jid=jid))
+
     tgt_list = salt.get_accepted_keys()
     return render_template('home/index.html', tgt_list=tgt_list, form=form)

@@ -1,14 +1,34 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash, abort
 from flask_login import login_required
 import json
+import requests
 from ... import salt
+from buttersalt_saltapi.saltapi import LoginError
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
 
+@saltstack.before_app_request
+def before_request():
+    try:
+        salt.login()
+    except LoginError as e:
+        flash('Salt API Login Fail : status {}'.format(e))
+        abort(500)
+    except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError, requests.exceptions.Timeout,
+            requests.exceptions.TooManyRedirects, requests.exceptions.RequestException) as e:
+        flash('Salt API Connection Error : status {}'.format(e))
+        abort(500)
+
+
+@saltstack.before_request
+@login_required
+def before_request():
+    pass
+
+
 @saltstack.route('/minions/')
 @saltstack.route('/minions/<mid>')
-@login_required
 def minions(mid=None):
     data = salt.get_minions(mid)
     if mid:
@@ -18,7 +38,6 @@ def minions(mid=None):
 
 @saltstack.route('/jobs/')
 @saltstack.route('/jobs/<jid>')
-@login_required
 def jobs(jid=None):
     data = salt.get_jobs(jid)
     if jid:
@@ -29,7 +48,6 @@ def jobs(jid=None):
 
 @saltstack.route('/keys/',  methods=['GET', 'POST'])
 @saltstack.route('/keys/<mid>')
-@login_required
 def keys(mid=None):
     data = salt.get_keys(mid)
     if mid:
@@ -44,7 +62,6 @@ def keys(mid=None):
 
 
 @saltstack.route('/stats/')
-@login_required
 def stats():
     data = salt.get_stats()
     return render_template('saltstack/stats.html', Data=data)
