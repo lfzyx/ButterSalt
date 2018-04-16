@@ -6,6 +6,5 @@ Flask-Mail==0.9.1
 Flask-Moment==0.6.0
 Flask-Script==2.0.6
 Flask-WTF==0.14.2
-PyMySQL==0.8.0
 PyYAML==3.12
 buttersalt-saltapi==1.0.5
