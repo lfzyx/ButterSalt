@@ -53,4 +53,4 @@ def index():
         return redirect(url_for('saltstack.jobs', jid=jid))
 
     tgt_list = salt.get_accepted_keys()
-    return render_template('run/index.html', tgt_list=tgt_list, form=form)
+    return render_template('run/run.html', tgt_list=tgt_list, form=form)

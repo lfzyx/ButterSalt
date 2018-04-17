@@ -33,6 +33,11 @@ class ButterSaltTestCase(unittest.TestCase):
         rv = self.testapp.get('/', follow_redirects=True)
         assert 'Job status' in rv.data.decode()
 
+    def test_run(self):
+        self.login('admin', 'admin')
+        rv = self.testapp.get('/run/', follow_redirects=True)
+        assert '<label class="control-label" for="tgt">' in rv.data.decode()
+
     def test_salt_jobs(self):
         self.login('admin', 'admin')
         rv = self.testapp.get('/salt/jobs/', follow_redirects=True)
