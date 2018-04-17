@@ -37,6 +37,4 @@ msgstr "用户名"
 msgid "Password"
 msgstr "密码"
 
-msgid "Logged in successfully."
-msgstr "登入成功"
 

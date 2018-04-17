@@ -20,7 +20,6 @@ class ButterSaltTestCase(unittest.TestCase):
 
     def test_login_logout_signup(self):
         rv = self.login('admin', 'admin')
-        print(rv.data.decode())
         assert 'Logged in successfully' in rv.data.decode()
         rv = self.logout()
         assert 'You have been logged out.' in rv.data.decode()
