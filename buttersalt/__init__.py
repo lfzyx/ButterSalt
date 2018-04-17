@@ -58,11 +58,13 @@ def create_app(config_name):
     app.logger.addHandler(stream_handler)
     app.logger.setLevel(logging.INFO)
 
-    from .views.home import home
+    from .views.run import run
+    from .views.dashboard import dashboard
     from .views.saltstack import saltstack
     from .views.user import user
     from .views.error import error
-    app.register_blueprint(home)
+    app.register_blueprint(run)
+    app.register_blueprint(dashboard)
     app.register_blueprint(saltstack)
     app.register_blueprint(user)
     app.register_blueprint(error)

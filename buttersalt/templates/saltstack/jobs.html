@@ -1,16 +1,31 @@
-{% extends "saltstack/table-base.html" %}
+{% extends "base.html" %}
 
-{% block table_body %}
+{% block page_content %}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Jid</th>
+        <th>Function</th>
+        <th>Target</th>
+        <th>Target-type</th>
+        <th>Arguments</th>
+        <th>StartTime</th>
+        <th>User</th>
+    </tr>
+    </thead>
 <tbody>
-{% for n in Data[i[0]] %}
+{% for i in Data|dictsort %}
 <tr>
-    <td> {{ n }} </td>
+    <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
+    {% for n in Data[i[0]] %}
     <td> {{ Data[i[0]][n] }} </td>
+    {% endfor %}
 </tr>
 {% endfor %}
 </tbody>
-{% endblock table_body %}
 
-{% block href %}
-<a href="{{ i[0] }}">{{ i[0] }}</a>
-{% endblock href %}
+</table>
+{% endblock page_content %}
+
+

@@ -20,16 +20,16 @@ class ModulesForm(FlaskForm):
     submit = SubmitField('提交')
 
 
-home = Blueprint('home', __name__)
+run = Blueprint('run', __name__, url_prefix='/run')
 
 
-@home.before_request
+@run.before_request
 @login_required
 def before_request():
     pass
 
 
-@home.route('/', methods=['GET', 'POST'])
+@run.route('/', methods=['GET', 'POST'])
 def index():
     """ Generate ModulesForm, provide autocomplete required data-source.
 
@@ -53,4 +53,4 @@ def index():
         return redirect(url_for('saltstack.jobs', jid=jid))
 
     tgt_list = salt.get_accepted_keys()
-    return render_template('home/index.html', tgt_list=tgt_list, form=form)
+    return render_template('run/index.html', tgt_list=tgt_list, form=form)

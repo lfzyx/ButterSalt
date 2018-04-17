@@ -51,7 +51,7 @@ def login():
             login_user(me, form.remember_me.data)
             flash(lazy_gettext('Logged in successfully.'))
             current_app.logger.info('A successful login attempt (%s)', username)
-            return redirect(request.args.get('next') or url_for('home.index'))
+            return redirect(request.args.get('next') or url_for('dashboard.index'))
         flash('Invalid usename or password.')
         current_app.logger.warning('A warning login attempt (%s)', username)
     return render_template('user/login.html', form=form)
@@ -62,4 +62,4 @@ def login():
 def logout():
     logout_user()
     flash('You have been logged out.')
-    return redirect(url_for('home.index'))
+    return redirect(url_for('dashboard.index'))

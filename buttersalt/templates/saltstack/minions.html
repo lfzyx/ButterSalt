@@ -1,16 +1,32 @@
-{% extends "saltstack/table-base.html" %}
+{% extends "base.html" %}
 
-{% block table_body %}
+{% block page_content %}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>minion</th>
+        <th>lsb_distrib_description</th>
+        <th>cpu_model</th>
+        <th>num_cpus</th>
+        <th>osarch</th>
+        <th>ip4_interfaces</th>
+        <th>mem_total</th>
+    </tr>
+    </thead>
 <tbody>
-{% for n in Data[i[0]] %}
+{% for i in Data|dictsort %}
 <tr>
-    <td> {{ n }} </td>
-    <td> {{ Data[i[0]][n] }} </td>
+        <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
+        <td> {{ Data[i[0]].get('lsb_distrib_description') }} </td>
+        <td> {{ Data[i[0]].get('cpu_model') }} </td>
+        <td> {{ Data[i[0]].get('num_cpus') }} </td>
+        <td> {{ Data[i[0]].get('osarch') }} </td>
+        <td> {{ Data[i[0]].get('ip4_interfaces') }} </td>
+        <td> {{ Data[i[0]].get('mem_total') }} </td>
 </tr>
 {% endfor %}
 </tbody>
-{% endblock table_body %}
 
-{% block href %}
-<a href="{{ i[0] }}">{{ i[0] }}</a>
-{% endblock href %}
+</table>
+{% endblock page_content %}
