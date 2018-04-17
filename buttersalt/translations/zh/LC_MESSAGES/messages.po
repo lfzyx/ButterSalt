@@ -18,11 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.1\n"
 
-msgid "Change Password"
-msgstr "修改密码"
-
-msgid "Change Email"
-msgstr "修改邮箱"
 
 msgid "Logout"
 msgstr "登出"
@@ -36,24 +31,6 @@ msgstr "登入"
 msgid "Remember Me"
 msgstr "保持登入"
 
-msgid "Change Your Password"
-msgstr "修改你的密码"
-
-msgid "Forgot your password?"
-msgstr "忘记密码？"
-
-msgid "Click here to reset it"
-msgstr "点击这里重置"
-
-msgid "New user?"
-msgstr "新用户？"
-
-msgid "Click here to register"
-msgstr "点击这里注册"
-
-msgid "Sign up"
-msgstr "注册"
-
 msgid "Username"
 msgstr "用户名"
 
@@ -62,16 +39,4 @@ msgstr "密码"
 
 msgid "Logged in successfully."
 msgstr "登入成功"
-
-msgid "Confirm password"
-msgstr "验证密码"
-
-msgid "Email"
-msgstr "邮箱"
-
-msgid "A confirmation email has been sent to you by email."
-msgstr "一封验证邮件已经发送至你的邮箱。"
-
-msgid "A new confirmation email has been sent to you by email."
-msgstr "一封新的验证邮件已经发送至你的邮箱。"
 

@@ -34,7 +34,7 @@ stream_handler.setLevel(logging.INFO)
 
 @babel.localeselector
 def get_locale():
-    locale = request.accept_languages.best_match(['zh-cn', 'zh-tw', 'en'])
+    locale = request.accept_languages.best_match(['en', 'zh-cn', 'zh-tw'])
     if locale == 'zh-cn' or 'zh-tw':
         return 'zh'
     else:
