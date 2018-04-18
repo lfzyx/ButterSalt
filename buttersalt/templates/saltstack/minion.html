@@ -1,12 +1,73 @@
-{% extends "saltstack/table-base.html" %}
+{% extends "base.html" %}
 
-{% block table_body %}
-<tbody>
-{% for n in Data[i[0]] %}
-<tr>
-    <td> {{ n }} </td>
-    <td> {{ Data[i[0]][n] }} </td>
-</tr>
-{% endfor %}
-</tbody>
-{% endblock table_body %}
+{% block page_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Minion: {{ Data.get('id') }}</h3>
+    </div>
+
+    <table class="table table-striped">
+        <caption>System</caption>
+        <thead>
+            <tr>
+                <th>Lsb Distrib Description</th>
+                <th>kernel release</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> {{ Data.get('lsb_distrib_description') }} </td>
+            <td> {{ Data.get('kernelrelease') }} </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped">
+        <caption>CPU</caption>
+        <thead>
+            <tr>
+                <th>CPU arch</th>
+                <th>Num CPUs</th>
+                <th>CPU model</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> {{ Data.get('cpuarch') }} </td>
+            <td> {{ Data.get('num_cpus') }} </td>
+            <td> {{ Data.get('cpu_model') }} </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped">
+        <caption>Mem</caption>
+        <thead>
+            <tr>
+                <th>Mem Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> {{ Data.get('mem_total') }} </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped">
+        <caption>Network</caption>
+        <thead>
+            <tr>
+                <th>Public IP Address</th>
+                <th>Private IP Address</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> {{ Network.get('public') }} </td>
+            <td> {{ Network.get('private') }} </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock page_content %}

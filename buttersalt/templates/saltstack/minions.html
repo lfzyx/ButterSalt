@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 
 {% block page_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Minion List</h3>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>minion</th>
-        <th>lsb_distrib_description</th>
-        <th>cpu_model</th>
-        <th>num_cpus</th>
-        <th>osarch</th>
-        <th>ip4_interfaces</th>
-        <th>mem_total</th>
-    </tr>
-    </thead>
-<tbody>
-{% for i in Data|dictsort %}
-<tr>
-        <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
-        <td> {{ Data[i[0]].get('lsb_distrib_description') }} </td>
-        <td> {{ Data[i[0]].get('cpu_model') }} </td>
-        <td> {{ Data[i[0]].get('num_cpus') }} </td>
-        <td> {{ Data[i[0]].get('osarch') }} </td>
-        <td> {{ Data[i[0]].get('ip4_interfaces') }} </td>
-        <td> {{ Data[i[0]].get('mem_total') }} </td>
-</tr>
-{% endfor %}
-</tbody>
-
-</table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Minion</th>
+                <th>System</th>
+                <th>CPU</th>
+                <th>Mem</th>
+                <th>Network</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data|dictsort %}
+        <tr>
+            <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
+            <td> {{ Data[i[0]].get('lsb_distrib_description') }} </td>
+            <td> {{ Data[i[0]].get('num_cpus') }} </td>
+            <td> {{ Data[i[0]].get('mem_total') }} </td>
+            <td> {{ Data[i[0]].get('ipv4') }} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock page_content %}

@@ -1,31 +1,38 @@
 {% extends "base.html" %}
 
 {% block page_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Job List</h3>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Jid</th>
-        <th>Function</th>
-        <th>Target</th>
-        <th>Target-type</th>
-        <th>Arguments</th>
-        <th>StartTime</th>
-        <th>User</th>
-    </tr>
-    </thead>
-<tbody>
-{% for i in Data|dictsort %}
-<tr>
-    <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
-    {% for n in Data[i[0]] %}
-    <td> {{ Data[i[0]][n] }} </td>
-    {% endfor %}
-</tr>
-{% endfor %}
-</tbody>
-
-</table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Jid</th>
+                <th>Function</th>
+                <th>Target</th>
+                <th>Target-type</th>
+                <th>Arguments</th>
+                <th>StartTime</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data|dictsort|reverse %}
+        <tr>
+            <td> <a href="{{ i[0] }}">{{ i[0] }}</a> </td>
+            <td> {{ Data[i[0]].get('Function')}} </td>
+            <td> {{ Data[i[0]].get('Target')}} </td>
+            <td> {{ Data[i[0]].get('Target-type')}} </td>
+            <td> {{ Data[i[0]].get('Arguments')}} </td>
+            <td> {{ Data[i[0]].get('StartTime')}} </td>
+            <td> {{ Data[i[0]].get('User')}} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock page_content %}
 
 

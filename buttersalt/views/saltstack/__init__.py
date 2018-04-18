@@ -4,6 +4,7 @@ import json
 import requests
 from ... import salt
 from buttersalt_saltapi.saltapi import LoginError
+import ipaddress
 
 saltstack = Blueprint('saltstack', __name__, url_prefix='/salt')
 
@@ -28,22 +29,55 @@ def before_request():
 
 
 @saltstack.route('/minions/')
-@saltstack.route('/minions/<mid>')
-def minions(mid=None):
-    data = salt.get_minions(mid)
-    if mid:
-        return render_template('saltstack/minion.html', Data=data)
+def minions():
+    data = salt.get_minions()
+
     return render_template('saltstack/minions.html', Data=data)
 
 
+@saltstack.route('/minions/<mid>')
+def minion(mid=None):
+    data = salt.get_minions(mid).get(mid)
+    network = data.get('ip4_interfaces')
+
+    def removelocalhost(network):
+        localhost = []
+        for k, v in network.items():
+            if v == ['127.0.0.1']:
+                localhost.append(k)
+
+        for i in localhost:
+            network.pop(i)
+
+        return network
+
+    def ip_private_or_public(network):
+        iplist = {'private': [], 'public': []}
+        for k, v in list(network.items()):
+            if ipaddress.IPv4Address(v[0]).is_private:
+                iplist['private'].append(v[0])
+            elif ipaddress.IPv4Address(v[0]).is_global:
+                iplist['public'].append(v[0])
+
+        return iplist
+
+    network = removelocalhost(network)
+    network = ip_private_or_public(network)
+
+    return render_template('saltstack/minion.html', Data=data, Network=network)
+
+
 @saltstack.route('/jobs/')
-@saltstack.route('/jobs/<jid>')
-def jobs(jid=None):
-    data = salt.get_jobs(jid)
-    if jid:
-        pretty = json.dumps(data["Result"], indent=4)
-        return render_template('saltstack/job.html', Data=data, pretty=pretty)
+def jobs():
+    data = salt.get_jobs()
     return render_template('saltstack/jobs.html', Data=data)
+
+
+@saltstack.route('/jobs/<jid>')
+def job(jid=None):
+    data = salt.get_jobs(jid)
+    pretty = json.dumps(data["Result"], indent=4)
+    return render_template('saltstack/job.html', Data=data, pretty=pretty)
 
 
 @saltstack.route('/keys/',  methods=['GET', 'POST'])
