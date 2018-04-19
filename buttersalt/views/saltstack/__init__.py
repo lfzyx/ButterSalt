@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, abort
+from flask import Blueprint, render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required
 import json
 import requests
@@ -81,17 +81,16 @@ def job(jid=None):
 
 
 @saltstack.route('/keys/',  methods=['GET', 'POST'])
-@saltstack.route('/keys/<mid>')
-def keys(mid=None):
-    data = salt.get_keys(mid)
-    if mid:
-        return render_template('saltstack/key.html', Data=data)
+def keys():
     if request.method == 'POST':
         if 'delete' in request.form:
             salt.delete_key(request.form.get('delete'))
         elif 'accept' in request.form:
             salt.accept_key(request.form.get('accept'))
-        data = salt.get_keys(mid)
+        elif 'reject' in request.form:
+            salt.reject_key(request.form.get('reject'))
+        return redirect(url_for('saltstack.keys'))
+    data = salt.get_keys()
     return render_template('saltstack/keys.html', Data=data)
 
 

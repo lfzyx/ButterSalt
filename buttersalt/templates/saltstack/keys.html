@@ -1,47 +1,111 @@
-{% extends "saltstack/table-base.html" %}
+{% extends "base.html" %}
 
 {% block page_content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Key List</h3>
+    </div>
 
-<table class="table table-hover">
-{% for i in Data|dictsort %}
-<thead>
-<tr>
-    <th>{% block href scoped %} {{ i[0] }} {% endblock href %}</th>
-</tr>
-</thead>
-{% block table_body scoped %}
-<tbody>
-{% for n in Data[i[0]] %}
-<tr>
-    {% if i[0] == "minions" %}
-    <td> <a href="{{ n }}" >{{ n }}</a></td>
-    <td>
-        <form action method="post">
-            <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
-            <button type="submit"  name="delete" value="{{ n }}">删除</button>
-        </form>
-    </td>
-    {% elif i[0] == "minions_pre" %}
-    <td>{{ n }}</td>
-    <td>
-        <form action method="post">
-            <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
-            <button type="submit"  name="accept" value="{{ n }}" >添加</button>
-        </form>
-    </td>
-    {% else %}
-    <td> {{ n }} </td>
-    <td></td>
+    {% if Data.get('minions')|length > 0 %}
+    <table class="table table-hover">
+        <caption>Accepted Keys</caption>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data.get('minions') %}
+        <tr>
+            <td> {{ i }} </a></td>
+            <td>
+                <form action method="post">
+                <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger" name="delete" value="{{ i }}">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     {% endif %}
-</tr>
-{% endfor %}
-</tbody>
-{% endblock table_body %}
-{% endfor %}
-</table>
 
+    {% if Data.get('minions_denied')|length > 0 %}
+    <table class="table table-striped">
+        <caption>Denied Keys</caption>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data.get('minions_denied') %}
+        <tr>
+            <td> {{ i }} </a> </td>
+            <td> delete </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
+    {% if Data.get('minions_pre')|length > 0 %}
+    <table class="table table-striped">
+        <caption>Unaccepted Keys</caption>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data.get('minions_pre') %}
+        <tr>
+            <td> {{ i }} </a> </td>
+            <td>
+                <form action method="post">
+                    <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-success" name="accept" value="{{ i }}" >Accept</button>
+                </form>
+                <form action method="post">
+                    <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-warning" name="reject" value="{{ i }}" >Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
+    {% if Data.get('minions_rejected')|length > 0 %}
+    <table class="table table-striped">
+        <caption>Rejected Keys</caption>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in Data.get('minions_rejected') %}
+        <tr>
+            <td> {{ i }} </a> </td>
+            <td>
+                <form action method="post">
+                <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger" name="delete" value="{{ i }}">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
 {% endblock page_content %}
+
 
 

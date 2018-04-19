@@ -15,7 +15,7 @@ def before_request():
 
 @dashboard.route('/', methods=['GET', 'POST'])
 def index():
-    minion_status = salt.execution_command_low(client='runner', fun='manage.status')
+    minion_status = salt.execution_command_low(client='runner', fun='manage.status',
+                                               kwargs={"timeout": 1, 'gather_job_timeout': 1})
     job_status = salt.execution_command_low(client='runner', fun='jobs.active')
-
     return render_template('dashboard/dashboard.html', job_status=job_status, minion_status=minion_status)

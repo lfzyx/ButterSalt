@@ -50,7 +50,7 @@ def index():
             d[kw[0]] = kw[1]
         jid = salt.execution_command_minions(tgt=tgt, fun=fun, args=arg, kwargs=d)
         flash('执行完成')
-        return redirect(url_for('saltstack.jobs', jid=jid))
+        return redirect(url_for('saltstack.job', jid=jid))
 
     tgt_list = salt.get_accepted_keys()
     return render_template('run/run.html', tgt_list=tgt_list, form=form)
